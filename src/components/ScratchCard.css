@@ -1,0 +1,717 @@
+/* Scratch Card Component */
+
+.scratch-card {
+  position: relative;
+  width: 236px;
+  height: 236px;
+  border-radius: 10px;
+  transform-origin: center center;
+  transition: transform 0.7s cubic-bezier(0.34, 0.46, 0.45, 0.94),
+              opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+/* Force maximum quality rendering for all SVG/image elements */
+.scratch-card img,
+.scratch-card svg {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: auto;
+  shape-rendering: geometricPrecision;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.scratch-card.scratching {
+  transition: transform 0.05s ease-out;
+}
+
+.scratch-card:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 4px;
+}
+
+/* Stack positioning effects */
+.scratch-card.back {
+  transform: rotate(-3deg) scale(0.95);
+  opacity: 0.7;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.scratch-card.middle {
+  transform: rotate(-1.5deg) scale(0.975);
+  opacity: 0.85;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.scratch-card.front {
+  transform: rotate(0deg) scale(1);
+  opacity: 1;
+  z-index: 3;
+}
+
+.scratch-card.revealed {
+  cursor: default;
+}
+
+/* Revealed state animations - character pop */
+.scratch-card.revealed .reveal-character {
+  animation: character-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Instant reveal for auto-scratch mode - no animations, full opacity immediately */
+.scratch-card.instant-reveal.revealed .reveal-character {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: translate(-50%, -60%) scale(1) translateZ(0) !important;
+}
+
+.scratch-card.instant-reveal.revealed .reveal-info,
+.scratch-card.instant-reveal.revealed .reveal-tier-label,
+.scratch-card.instant-reveal.revealed .reveal-crowns {
+  opacity: 1 !important;
+}
+
+/* Common tier - subtle pop */
+.scratch-card.common.revealed .reveal-character {
+  animation-name: character-pop-common;
+}
+
+@keyframes character-pop-common {
+  0% {
+    transform: translate(-50%, -60%) scale(0.7) translateZ(0);
+    opacity: 0;
+  }
+  60% {
+    transform: translate(-50%, -60%) scale(1.08) translateZ(0);
+  }
+  100% {
+    transform: translate(-50%, -60%) scale(1) translateZ(0);
+    opacity: 1;
+  }
+}
+
+/* Rare tier - subtle pop */
+.scratch-card.rare.revealed .reveal-character {
+  animation-name: character-pop-common;
+}
+
+/* Epic tier - subtle pop */
+.scratch-card.epic.revealed .reveal-character {
+  animation-name: character-pop-common;
+}
+
+/* Legendary tier - subtle pop */
+.scratch-card.legendary.revealed .reveal-character {
+  animation-name: character-pop-common;
+}
+
+/* Collection animation - float up and shrink into progress tracker */
+.scratch-card.collecting {
+  animation: collect-to-tracker 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes collect-to-tracker {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-300px) scale(0.2);
+    opacity: 0;
+  }
+}
+
+/* Revealed Content Layer */
+.scratch-card-reveal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Reveal card scale animation - subtle elegant bounce */
+.scratch-card.revealed .scratch-card-reveal {
+  animation: reveal-scale-bounce 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes reveal-scale-bounce {
+  0% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+/* Tier-specific border glow on reveal */
+.scratch-card.common.revealed .scratch-card-reveal {
+  border: 2px solid rgba(94, 105, 255, 1);
+  box-shadow: 0 0 20px rgba(94, 105, 255, 0.7),
+              0 0 40px rgba(94, 105, 255, 0.6),
+              inset 0 0 0 1px rgba(94, 105, 255, 0.8);
+}
+
+.scratch-card.rare.revealed .scratch-card-reveal {
+  border: 2px solid rgba(44, 175, 192, 1);
+  box-shadow: 0 0 20px rgba(44, 175, 192, 0.7),
+              0 0 40px rgba(44, 175, 192, 0.6),
+              inset 0 0 0 1px rgba(44, 175, 192, 0.8);
+}
+
+.scratch-card.epic.revealed .scratch-card-reveal {
+  border: 2px solid rgba(96, 44, 192, 1);
+  box-shadow: 0 0 20px rgba(96, 44, 192, 0.7),
+              0 0 40px rgba(96, 44, 192, 0.6),
+              inset 0 0 0 1px rgba(96, 44, 192, 0.8);
+}
+
+.scratch-card.legendary.revealed .scratch-card-reveal {
+  border: 2px solid rgba(255, 64, 207, 1);
+  box-shadow: 0 0 20px rgba(255, 64, 207, 0.7),
+              0 0 40px rgba(255, 64, 207, 0.6),
+              inset 0 0 0 1px rgba(255, 64, 207, 0.8);
+}
+
+/* Background gradient layer - tier-specific */
+.reveal-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  z-index: 0;
+}
+
+.reveal-background.common {
+  background: linear-gradient(145deg, #5E69FF -3.72%, #110028 65.33%);
+}
+
+.reveal-background.rare {
+  background: linear-gradient(145deg, #2CAFC0 -3.72%, #110028 65.33%);
+}
+
+.reveal-background.epic {
+  background: linear-gradient(145deg, #602CC0 -3.72%, #110028 65.33%);
+}
+
+.reveal-background.legendary {
+  background: linear-gradient(55deg, #FF40CF 0%, #110028 66.4%);
+}
+
+/* Animated sheen effect on reveal background */
+.scratch-card.revealed .reveal-background::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 65%,
+    transparent 100%
+  );
+  animation: sheen-sweep 3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  z-index: 0;
+}
+
+@keyframes sheen-sweep {
+  0% {
+    transform: translate(-100%, -100%);
+  }
+  100% {
+    transform: translate(50%, 50%);
+  }
+}
+
+/* Radial starburst effect (Star Vector from Figma) */
+.reveal-starburst {
+  position: absolute;
+  left: -7px;
+  top: -34px;
+  width: 250px;
+  height: 250px;
+  z-index: 1;
+  pointer-events: none;
+  object-fit: contain;
+  /* Smooth high-quality rendering */
+  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
+  shape-rendering: geometricPrecision;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Common tier starburst - blue tones matching #5E69FF */
+.scratch-card.common .reveal-starburst {
+  opacity: 0.85;
+}
+
+/* Rare tier starburst - teal tones matching #2CAFC0 */
+.scratch-card.rare .reveal-starburst {
+  filter: hue-rotate(-60deg) saturate(1.15) brightness(1.05);
+}
+
+/* Epic tier starburst - purple tones matching #602CC0 */
+.scratch-card.epic .reveal-starburst {
+  filter: hue-rotate(30deg) saturate(1.25) brightness(0.95);
+}
+
+/* Legendary tier starburst - pink/magenta tones matching #FF40CF */
+.scratch-card.legendary .reveal-starburst {
+  filter: hue-rotate(80deg) saturate(1.4) brightness(1.1);
+}
+
+/* Starburst continuous rotation - only when card is revealed */
+.scratch-card.revealed .reveal-starburst {
+  animation: starburst-shine 30s linear infinite;
+}
+
+@keyframes starburst-shine {
+  from {
+    transform: translateZ(0) rotate(0deg);
+  }
+  to {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+
+/* Character face - tier-specific sizing */
+.reveal-character {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%) translateZ(0);
+  object-fit: contain;
+  z-index: 2;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+  will-change: transform;
+  /* Force high-quality smooth SVG rendering in all contexts - zero pixelation */
+  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
+  shape-rendering: geometricPrecision;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translate(-50%, -60%) translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Common tier */
+.scratch-card.common .reveal-character {
+  width: 170px;
+  height: 170px;
+}
+
+/* Rare tier */
+.scratch-card.rare .reveal-character {
+  width: 170px;
+  height: 170px;
+}
+
+/* Epic tier */
+.scratch-card.epic .reveal-character {
+  width: 170px;
+  height: 170px;
+}
+
+/* Legendary tier */
+.scratch-card.legendary .reveal-character {
+  width: 170px;
+  height: 170px;
+}
+
+/* Star decorations - tier-specific sizing */
+.reveal-star-1,
+.reveal-star-2 {
+  position: absolute;
+  object-fit: contain;
+  z-index: 1;
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+  /* Smooth high-quality rendering */
+  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
+  shape-rendering: geometricPrecision;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* Common tier stars - match Figma exactly */
+.scratch-card.common .reveal-star-1 {
+  width: 23px;
+  height: 24px;
+}
+
+.scratch-card.common .reveal-star-2 {
+  width: 29px;
+  height: 30px;
+}
+
+/* Rare tier stars - 15% larger */
+.scratch-card.rare .reveal-star-1 {
+  width: 26px;
+  height: 28px;
+}
+
+.scratch-card.rare .reveal-star-2 {
+  width: 33px;
+  height: 35px;
+}
+
+/* Epic tier stars - 30% larger */
+.scratch-card.epic .reveal-star-1 {
+  width: 30px;
+  height: 31px;
+}
+
+.scratch-card.epic .reveal-star-2 {
+  width: 38px;
+  height: 39px;
+}
+
+/* Legendary tier stars - 50% larger */
+.scratch-card.legendary .reveal-star-1 {
+  width: 35px;
+  height: 36px;
+}
+
+.scratch-card.legendary .reveal-star-2 {
+  width: 44px;
+  height: 45px;
+}
+
+.reveal-star-1 {
+  top: 186px;
+  left: 18px;
+  animation: reveal-star-float 3s ease-in-out infinite;
+}
+
+.reveal-star-2 {
+  top: 156px;
+  left: 194px;
+  animation: reveal-star-float 3.5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* Tier-specific float intensity */
+@keyframes reveal-star-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) translateZ(0);
+  }
+  50% {
+    transform: translateY(-8px) rotate(5deg) translateZ(0);
+  }
+}
+
+.scratch-card.epic .reveal-star-1,
+.scratch-card.epic .reveal-star-2 {
+  animation-name: reveal-star-float-epic;
+}
+
+.scratch-card.legendary .reveal-star-1,
+.scratch-card.legendary .reveal-star-2 {
+  animation-name: reveal-star-float-legendary;
+}
+
+@keyframes reveal-star-float-epic {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) translateZ(0);
+  }
+  50% {
+    transform: translateY(-12px) rotate(8deg) translateZ(0);
+  }
+}
+
+@keyframes reveal-star-float-legendary {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) translateZ(0);
+  }
+  50% {
+    transform: translateY(-16px) rotate(12deg) translateZ(0);
+  }
+}
+
+/* Reward info container - always visible (no animation needed) */
+.reveal-info {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 3;
+}
+
+.reveal-tier-label {
+  font-family: 'Grota Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(230, 230, 230, 1) 50%,
+    rgba(200, 200, 200, 1) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9));
+}
+
+/* Legendary tier - larger label */
+.scratch-card.legendary .reveal-tier-label {
+  font-size: 18px;
+  letter-spacing: 1.5px;
+}
+
+.reveal-crowns {
+  font-family: 'Grota Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1;
+  text-align: center;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  background: linear-gradient(180deg,
+    rgba(255, 250, 200, 1) 0%,
+    rgba(255, 220, 100, 1) 25%,
+    rgba(255, 195, 50, 1) 50%,
+    rgba(255, 215, 90, 1) 75%,
+    rgba(255, 185, 30, 1) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-transform: uppercase;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.8));
+}
+
+/* Legendary tier - larger crowns text */
+.scratch-card.legendary .reveal-crowns {
+  font-size: 22px;
+  letter-spacing: 1.5px;
+}
+
+/* Scratch Surface Canvas */
+.scratch-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 236px;
+  height: 236px;
+  border-radius: 10px;
+  z-index: 1;
+  transition: opacity 0.4s ease-out;
+  touch-action: none;
+
+  /* Gold dashed border */
+  border: 2px dashed rgba(228, 148, 0, 1);
+
+  /* Drop shadows from Figma */
+  box-shadow:
+    2px 4px 14px rgba(0, 0, 0, 0.25),
+    0px 4px 4px rgba(0, 0, 0, 0.25),
+    inset 0 0 7px rgba(0, 0, 0, 0.46);
+}
+
+.scratch-card.revealed .scratch-canvas {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Stack Shadow Layers */
+.stack-shadow {
+  position: absolute;
+  width: 259.38px;
+  height: 259.38px;
+  left: -11.69px;
+  top: -8px;
+  border-radius: 10px;
+  border: 2px dashed rgba(103, 84, 23, 1);
+  z-index: 0;
+  pointer-events: none;
+
+  /* Shadow gradient + black overlay */
+  background:
+    linear-gradient(
+      135deg,
+      rgba(204, 232, 254, 1) 0%,
+      rgba(205, 160, 255, 1) 24.16%,
+      rgba(132, 137, 245, 1) 40%,
+      rgba(205, 241, 255, 1) 71.33%,
+      rgba(181, 145, 233, 1) 100%
+    ),
+    rgba(0, 0, 0, 0.4);
+  background-blend-mode: normal;
+}
+
+.stack-shadow.back {
+  transform: rotate(-3deg);
+}
+
+.stack-border {
+  position: absolute;
+  width: 248.03px;
+  height: 248.03px;
+  left: -6px;
+  top: -6px;
+  border-radius: 10px;
+  border: 2px dashed rgba(131, 107, 31, 1);
+  z-index: 0;
+  pointer-events: none;
+
+  /* Border gradient + black overlay */
+  background:
+    linear-gradient(
+      135deg,
+      rgba(204, 232, 254, 1) 0%,
+      rgba(205, 160, 255, 1) 24.16%,
+      rgba(132, 137, 245, 1) 40%,
+      rgba(205, 241, 255, 1) 71.33%,
+      rgba(181, 145, 233, 1) 100%
+    ),
+    rgba(0, 0, 0, 0.2);
+  background-blend-mode: normal;
+}
+
+.stack-border.middle {
+  transform: rotate(-1.5deg);
+}
+
+/* Tier-specific styling (if needed for future customization) */
+.scratch-card.common {
+  /* Common tier - uses base styling */
+}
+
+.scratch-card.rare {
+  /* Rare tier - uses base styling */
+}
+
+.scratch-card.epic {
+  /* Epic tier - uses base styling */
+}
+
+.scratch-card.legendary {
+  /* Legendary tier - uses base styling */
+}
+
+/* Accessibility: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .scratch-card {
+    transition: none;
+  }
+
+  .scratch-canvas {
+    transition: none;
+  }
+
+  .scratch-card.collecting {
+    animation: none;
+    opacity: 0;
+  }
+
+  .scratch-card.revealed .reveal-character {
+    animation: none;
+    opacity: 1;
+    transform: translate(-50%, -60%) scale(1);
+  }
+
+  .reveal-star-1,
+  .reveal-star-2 {
+    animation: none !important;
+  }
+}
+
+/* Hover state for active cards */
+.scratch-card.front:hover {
+  transform: scale(1.02);
+}
+
+.scratch-card.front:active {
+  transform: scale(0.98);
+}
+
+/* Reset button (for prototyping) */
+.scratch-card-reset {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 240, 0.95));
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+}
+
+.scratch-card-reset::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14.5 9C14.5 6.24 12.26 4 9.5 4H5.83L7.41 2.42L6 1L2 5L6 9L7.41 7.59L5.83 6H9.5C11.43 6 13 7.57 13 9.5C13 11.43 11.43 13 9.5 13C8.29 13 7.23 12.43 6.58 11.53L5.25 12.47C6.24 13.91 7.77 14.87 9.5 14.87C12.26 14.87 14.5 12.73 14.5 10V9Z' fill='%23333333'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.8;
+  transition: all 0.2s ease;
+}
+
+.scratch-card-reset:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(245, 245, 245, 1));
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.scratch-card-reset:hover::before {
+  opacity: 1;
+  transform: rotate(-90deg);
+}
+
+.scratch-card-reset:active {
+  transform: scale(0.95);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15),
+              inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.scratch-card-reset:active::before {
+  transform: rotate(-180deg);
+}
+
+.scratch-card-reset:focus {
+  outline: 2px solid rgba(135, 206, 250, 0.8);
+  outline-offset: 2px;
+}

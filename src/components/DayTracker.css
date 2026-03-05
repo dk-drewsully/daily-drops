@@ -1,0 +1,53 @@
+/* Day Tracker Component */
+/* Based on Figma: 311×38px at (32, 247) */
+
+.day-tracker {
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 16px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.15) 100%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  margin-bottom: 24px;
+}
+
+.day-tracker-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.day-name {
+  font-family: 'Grota Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+
+.day-name.completed {
+  color: rgba(255, 255, 255, 1);
+}
+
+.day-name.incomplete {
+  color: rgba(176, 190, 197, 1);
+}
+
+.day-check-container {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.check-circle {
+  width: 20px;
+  height: 20px;
+}

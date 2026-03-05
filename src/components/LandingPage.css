@@ -1,0 +1,266 @@
+/* Landing Page - Exact positions from Figma */
+
+.landing-page {
+  width: 390px;
+  height: 772px; /* From Figma Main Container */
+  position: relative;
+  /* Same gradient as loading screen */
+  background: linear-gradient(219deg, rgba(3, 0, 180, 0.48) 17.39%, rgba(0, 0, 180, 0.00) 80.18%),
+              linear-gradient(182deg, #16004E 3.24%, #17005C 24.54%, #4225AC 52.62%, #6149D9 74.37%, #9081FF 96.11%);
+  background-blend-mode: color-burn, normal;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Shared Background Elements - Reused from LoadingScreen */
+.landing-page .background-orbs {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.landing-page .orb {
+  position: absolute;
+  pointer-events: none;
+}
+
+.landing-page .orb-1 {
+  width: 212px;
+  height: 264px;
+  left: -42px;
+  top: 172px;
+}
+
+.landing-page .orb-2 {
+  width: 269px;
+  height: 293px;
+  left: 104px;
+  top: 434px;
+}
+
+.landing-page .orb-3 {
+  width: 229px;
+  height: 242px;
+  left: 179px;
+  top: 67px;
+}
+
+.landing-page .stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.landing-page .star {
+  position: absolute;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+}
+
+.landing-page .star-1 { left: 332px; top: 103px; width: 18px; height: 18px; }
+.landing-page .star-2 { left: 59px; top: 78px; width: 12px; height: 12px; }
+.landing-page .star-3 { left: 18px; top: 167px; width: 18px; height: 18px; }
+.landing-page .star-4 { left: 318px; top: 393px; width: 12px; height: 12px; }
+.landing-page .star-5 { left: 66px; top: 632px; width: 18px; height: 18px; }
+.landing-page .star-6 { left: 317px; top: 62px; width: 29px; height: 30px; }
+
+.landing-page .circles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.landing-page .circle {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.landing-page .circle-1 {
+  left: 361px;
+  top: 97px;
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle, rgba(255, 238, 47, 1) 26%, rgba(160, 143, 11, 1) 100%);
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+  animation: float-circle 4.2s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+.landing-page .circle-2 {
+  width: 30px;
+  height: 30px;
+  left: 18px;
+  top: 346px;
+  background: radial-gradient(50% 50% at 50% 50%, #00E5D4 0%, rgba(0, 229, 212, 0) 100%);
+}
+
+.landing-page .circle-3 {
+  width: 44px;
+  height: 44px;
+  left: 319px;
+  top: 496px;
+  background: radial-gradient(50% 50% at 50% 50%, #FF8A00 0%, rgba(255, 138, 0, 0) 100%);
+}
+
+.landing-page .circle-4 {
+  width: 30px;
+  height: 30px;
+  left: 33px;
+  top: 743px;
+  background: radial-gradient(50% 50% at 50% 50%, #00E5D4 0%, rgba(0, 229, 212, 0) 100%);
+}
+
+.landing-page .bottom-ellipses {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.landing-page .ellipse-2336 {
+  position: absolute;
+  width: 147px;
+  height: 147px;
+  left: 23px;
+  top: 696px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(1, 164, 255, 0.3) 0%, rgba(1, 164, 255, 0) 100%);
+  border-radius: 50%;
+}
+
+.landing-page .ellipse-2339 {
+  position: absolute;
+  width: 202px;
+  height: 202px;
+  left: 133px;
+  top: 635px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 55, 242, 0.28) 0%, rgba(255, 55, 242, 0) 100%);
+  border-radius: 50%;
+}
+
+.landing-page .ellipse-2246 {
+  position: absolute;
+  width: 131px;
+  height: 131px;
+  left: 268px;
+  top: 698px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 148, 1, 0.4) 0%, rgba(255, 148, 1, 0) 100%);
+  border-radius: 50%;
+}
+
+.landing-page .texture {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.15;
+  z-index: 3;
+}
+
+.landing-page .bg-dots {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Logo - Centered, 24px from top */
+.landing-page .logo-container {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.landing-page .logo {
+  width: 198px;
+  height: auto;
+  display: block;
+}
+
+/* Content Container - Flexbox Auto Layout */
+.landing-page .content-container {
+  position: absolute;
+  top: 169px; /* 24px (logo top) + 121px (logo height) + 24px (gap) */
+  left: 22px;
+  right: 22px;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+
+/* Progress Tracker Container - 4 cards in a row */
+.landing-page .progress-tracker-container {
+  display: flex;
+  gap: 26px;
+  align-items: flex-start;
+  height: 100%;
+}
+
+/* Reward Reveal Title */
+.landing-page .reward-reveal-title {
+  width: 100%;
+  max-width: 260px;
+  height: 28px;
+  margin: 17px auto 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+  background: linear-gradient(180deg,
+    rgba(255, 243, 180, 1) 12.5%,
+    rgba(255, 217, 26, 1) 82.7%,
+    rgba(255, 170, 1, 1) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+}
+
+/* Scratch Card Area */
+.landing-page .scratch-card-area {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.landing-page .scratch-card-placeholder {
+  width: 346px;
+  height: 300px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+}
+
+/* Animations */
+@keyframes float-circle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}

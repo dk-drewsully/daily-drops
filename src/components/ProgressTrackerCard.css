@@ -1,0 +1,289 @@
+.progress-tracker-card {
+  width: 64px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: filter 0.3s ease, opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1;
+}
+
+.progress-tracker-card.legendary {
+  width: 76px;
+}
+
+/* Dim non-glowing cards when another card is glowing */
+.progress-tracker-card.dimmed {
+  opacity: 0.65;
+}
+
+/* Common tier styling */
+.progress-tracker-card.common .tracker-image {
+  background: linear-gradient(145deg, #5E69FF -3.72%, #110028 65.33%);
+  box-shadow: 0 0 0 2px #87F3FF;
+}
+
+.progress-tracker-card.common .tracker-label-container {
+  background: linear-gradient(90deg,
+    rgba(135, 243, 255, 1) 0%,
+    rgba(65, 56, 235, 1) 50%,
+    rgba(135, 243, 255, 1) 100%
+  );
+  border-top: 1px solid rgba(255, 255, 255, 1);
+  border-left: 1px solid rgba(255, 255, 255, 1);
+  border-right: 1px solid rgba(255, 255, 255, 1);
+}
+
+.progress-tracker-card.common .tracker-details {
+  border: 1px solid rgba(255, 255, 255, 1);
+  border-top: none;
+}
+
+/* Rare tier styling */
+.progress-tracker-card.rare .tracker-image {
+  background: linear-gradient(145deg, #2CAFC0 -3.72%, #110028 65.33%);
+  box-shadow: 0 0 0 2px #1FFFB0;
+}
+
+.progress-tracker-card.rare .tracker-label-container {
+  background: linear-gradient(180deg, #3EE3BF 0%, #4BC10C 54.32%, #046490 100%);
+  border-top: 1px solid rgba(255, 255, 255, 1);
+  border-left: 1px solid rgba(255, 255, 255, 1);
+  border-right: 1px solid rgba(255, 255, 255, 1);
+}
+
+.progress-tracker-card.rare .tracker-details {
+  border: 1px solid rgba(255, 255, 255, 1);
+  border-top: none;
+}
+
+/* Epic tier styling */
+.progress-tracker-card.epic .tracker-image {
+  background: linear-gradient(145deg, #602CC0 -3.72%, #110028 65.33%);
+  box-shadow: 0 0 0 2px #FF49EE;
+}
+
+.progress-tracker-card.epic .tracker-label-container {
+  background: linear-gradient(180deg, #FF49EE 0%, #7300D3 51.92%, #9D2DFB 100%);
+  border-top: 1px solid rgba(255, 255, 255, 1);
+  border-left: 1px solid rgba(255, 255, 255, 1);
+  border-right: 1px solid rgba(255, 255, 255, 1);
+}
+
+.progress-tracker-card.epic .tracker-details {
+  border: 1px solid rgba(255, 255, 255, 1);
+  border-top: none;
+}
+
+/* Legendary tier styling */
+.progress-tracker-card.legendary .tracker-image {
+  background: linear-gradient(55deg, #FF40CF 0%, #110028 66.4%);
+  box-shadow: 0 0 0 2px #57E3FF;
+}
+
+.progress-tracker-card.legendary .tracker-label-container {
+  background: linear-gradient(180deg, #57E3FF 0%, #FB8C05 50%, #DC23C0 100%);
+  border-top: 1px solid rgba(255, 255, 255, 1);
+  border-left: 1px solid rgba(255, 255, 255, 1);
+  border-right: 1px solid rgba(255, 255, 255, 1);
+}
+
+.progress-tracker-card.legendary .tracker-details {
+  border: 1px solid rgba(255, 255, 255, 1);
+  border-top: none;
+}
+
+/* Glowing effect - tier-specific colors matching border */
+.progress-tracker-card.glowing {
+  animation: glow-pulse 1s ease-in-out 2;
+}
+
+/* Common tier glow - #87F3FF */
+.progress-tracker-card.common.glowing {
+  animation: glow-pulse-common 1s ease-in-out 2;
+}
+
+@keyframes glow-pulse-common {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(135, 243, 255, 0.6))
+            drop-shadow(0 0 16px rgba(135, 243, 255, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(135, 243, 255, 0.8))
+            drop-shadow(0 0 24px rgba(135, 243, 255, 0.6));
+  }
+}
+
+/* Rare tier glow - #1FFFB0 */
+.progress-tracker-card.rare.glowing {
+  animation: glow-pulse-rare 1s ease-in-out 2;
+}
+
+@keyframes glow-pulse-rare {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(31, 255, 176, 0.6))
+            drop-shadow(0 0 16px rgba(31, 255, 176, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(31, 255, 176, 0.8))
+            drop-shadow(0 0 24px rgba(31, 255, 176, 0.6));
+  }
+}
+
+/* Epic tier glow - #FF49EE */
+.progress-tracker-card.epic.glowing {
+  animation: glow-pulse-epic 1s ease-in-out 2;
+}
+
+@keyframes glow-pulse-epic {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(255, 73, 238, 0.6))
+            drop-shadow(0 0 16px rgba(255, 73, 238, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(255, 73, 238, 0.8))
+            drop-shadow(0 0 24px rgba(255, 73, 238, 0.6));
+  }
+}
+
+/* Legendary tier glow - #57E3FF */
+.progress-tracker-card.legendary.glowing {
+  animation: glow-pulse-legendary 1s ease-in-out 2;
+}
+
+@keyframes glow-pulse-legendary {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(87, 227, 255, 0.6))
+            drop-shadow(0 0 16px rgba(87, 227, 255, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(87, 227, 255, 0.8))
+            drop-shadow(0 0 24px rgba(87, 227, 255, 0.6));
+  }
+}
+
+/* Image Container */
+.tracker-image-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tracker-image {
+  width: 100%;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 10px;
+  margin-bottom: -4px;
+}
+
+.character-face {
+  width: 53px;
+  height: 53px;
+  object-fit: contain;
+}
+
+/* Label Container */
+.tracker-label-container {
+  width: 100%;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.tracker-label {
+  font-family: 'Grota Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 28px;
+  text-align: center;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.80);
+}
+
+/* Details Container */
+.tracker-details {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(23, 23, 23, 1);
+  padding: 6px 4px 4px;
+  gap: 0;
+  box-sizing: border-box;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+/* Progress Container */
+.tracker-progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.tracker-progress {
+  font-family: 'Grota Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  text-align: center;
+  color: #ffffff;
+}
+
+.tracker-collected {
+  font-family: 'Grota Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+  color: #ffffff;
+}
+
+/* Crowns Container */
+.tracker-crowns-container {
+  width: calc(100% + 8px);
+  margin-left: -4px;
+  margin-right: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  margin-top: 4px;
+  padding-top: 8px;
+  padding-bottom: 4px;
+}
+
+.tracker-crowns {
+  font-family: 'Grota Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+  letter-spacing: 0.5px;
+  background: linear-gradient(180deg,
+    rgba(255, 240, 180, 1) 0%,
+    rgba(255, 200, 80, 1) 34%,
+    rgba(255, 220, 100, 1) 65%,
+    rgba(255, 200, 80, 1) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-transform: uppercase;
+}

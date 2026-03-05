@@ -1,0 +1,175 @@
+import React, { useEffect, useState, useRef } from 'react';
+import './RewardCelebrationOverlay.css';
+
+/**
+ * Reward Celebration Overlay Component
+ * Full-screen celebration with coins bursting from center and confetti falling
+ */
+function RewardCelebrationOverlay({
+  isVisible = false,
+  rewardAmount = 50,
+  onDismiss
+}) {
+  const [isExiting, setIsExiting] = useState(false);
+  const [coins, setCoins] = useState([]);
+  const [confetti, setConfetti] = useState([]);
+  const confettiTimersRef = useRef([]);
+
+  // Generate 12 coins with final positions spread across container
+  useEffect(() => {
+    if (!isVisible) return;
+
+    // Pre-calculated final positions (10%-90% of container)
+    const coinPositions = [
+      { x: 15, y: 15 },   // top-left
+      { x: 50, y: 12 },   // top-center
+      { x: 85, y: 18 },   // top-right
+      { x: 12, y: 50 },   // mid-left
+      { x: 88, y: 48 },   // mid-right
+      { x: 18, y: 85 },   // bottom-left
+      { x: 50, y: 88 },   // bottom-center
+      { x: 82, y: 83 },   // bottom-right
+      { x: 25, y: 30 },   // diagonal top-left
+      { x: 75, y: 35 },   // diagonal top-right
+      { x: 30, y: 70 },   // diagonal bottom-left
+      { x: 70, y: 68 }    // diagonal bottom-right
+    ];
+
+    const generatedCoins = coinPositions.map((pos, i) => ({
+      id: i,
+      finalX: pos.x,
+      finalY: pos.y,
+      duration: 600 + Math.random() * 300, // 600-900ms
+      delay: i * 30 // Stagger slightly
+    }));
+
+    setCoins(generatedCoins);
+  }, [isVisible]);
+
+  // Generate 40 confetti pieces
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const colors = ['#FFB800', '#00D4FF', '#FF3D9A', '#FFFFFF', '#7B2FFF'];
+    const generatedConfetti = Array.from({ length: 40 }, (_, i) => {
+      const angle = (i * 9) * (Math.PI / 180); // i * 9deg
+      const velocityMultiplier = 100 + Math.random() * 200; // 100-300px
+      const outwardX = Math.cos(angle) * velocityMultiplier;
+      const outwardY = Math.sin(angle) * velocityMultiplier;
+
+      return {
+        id: i,
+        color: colors[i % colors.length],
+        outwardX,
+        outwardY,
+        fallDuration: 1000 + Math.random() * 600, // 1000-1600ms
+        rotation: Math.random() * 360,
+        rotationSpeed: 200 + Math.random() * 300, // 200-500 deg/s
+        delay: i * 5
+      };
+    });
+
+    setConfetti(generatedConfetti);
+
+    // Set timers to remove confetti after they exit
+    confettiTimersRef.current = generatedConfetti.map(piece =>
+      setTimeout(() => {
+        setConfetti(prev => prev.filter(p => p.id !== piece.id));
+      }, piece.fallDuration + 200 + piece.delay)
+    );
+
+    return () => {
+      confettiTimersRef.current.forEach(timer => clearTimeout(timer));
+    };
+  }, [isVisible]);
+
+  const handleDismiss = () => {
+    setIsExiting(true);
+    // Staggered exit: copy 150ms, particles 200ms, overlay 250ms
+    setTimeout(() => {
+      if (onDismiss) {
+        onDismiss();
+      }
+    }, 600); // Total exit time
+  };
+
+  if (!isVisible && !isExiting) return null;
+
+  return (
+    <div className={`reward-celebration-overlay ${isExiting ? 'exiting' : ''}`}>
+      {/* Background gradient */}
+      <div className="reward-background" />
+
+      {/* Blurred orb elements */}
+      <div className="reward-orbs-container">
+        <div className="reward-orb reward-orb-cyan-1" />
+        <div className="reward-orb reward-orb-cyan-2" />
+        <div className="reward-orb reward-orb-cyan-3" />
+        <div className="reward-orb reward-orb-cyan-4" />
+        <div className="reward-orb reward-orb-yellow" />
+      </div>
+
+      {/* Starburst effect with blur */}
+      <div className="reward-starburst" />
+
+      {/* Coins container with perspective */}
+      <div className="reward-coins-container">
+        {coins.map(coin => (
+          <div
+            key={coin.id}
+            className="reward-coin"
+            style={{
+              '--final-x': `${coin.finalX}%`,
+              '--final-y': `${coin.finalY}%`,
+              '--duration': `${coin.duration}ms`,
+              '--delay': `${coin.delay}ms`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Confetti container */}
+      <div className="reward-confetti-container">
+        {confetti.map(piece => (
+          <div
+            key={piece.id}
+            className="reward-confetti-piece"
+            style={{
+              '--outward-x': `${piece.outwardX}px`,
+              '--outward-y': `${piece.outwardY}px`,
+              '--fall-duration': `${piece.fallDuration}ms`,
+              '--rotation': `${piece.rotation}deg`,
+              '--rotation-speed': `${piece.rotationSpeed}deg`,
+              '--delay': `${piece.delay}ms`,
+              backgroundColor: piece.color
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Copy content */}
+      <div className="reward-copy-container">
+        <div className="reward-copy-title">YOU WON</div>
+
+        {/* Crown icon with concentric circles */}
+        <div className="reward-crown-container">
+          {/* Concentric circles */}
+          <div className="reward-circle-outer" />
+          <div className="reward-circle-inner" />
+
+          {/* Crown icon placeholder - using inline SVG crown */}
+          <div className="reward-crown-icon">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50 20L55 35L70 30L60 45L75 50L60 55L70 70L55 65L50 80L45 65L30 70L40 55L25 50L40 45L30 30L45 35L50 20Z" fill="white"/>
+            </svg>
+          </div>
+        </div>
+
+        <div className="reward-copy-amount">${rewardAmount}</div>
+        <div className="reward-copy-label">LOTTERY CREDITS</div>
+      </div>
+
+  );
+}
+
+export default RewardCelebrationOverlay;

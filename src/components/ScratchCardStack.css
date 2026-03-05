@@ -1,0 +1,139 @@
+/* Scratch Card Stack Container */
+
+.scratch-card-stack {
+  position: relative;
+  width: 236px;
+  height: 236px;
+  margin: 0 auto;
+}
+
+/* Card Wrapper */
+.scratch-card-wrapper {
+  width: 236px;
+  height: 236px;
+  transition: transform 0.7s cubic-bezier(0.34, 0.46, 0.45, 0.94),
+              opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              z-index 0s linear 0s;
+}
+
+/* Stack positioning animations */
+.scratch-card-wrapper.back {
+  z-index: 1;
+}
+
+.scratch-card-wrapper.middle {
+  z-index: 2;
+}
+
+.scratch-card-wrapper.front {
+  z-index: 3;
+}
+
+/* Hiding cards slide out above the stack */
+.scratch-card-wrapper.hiding {
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* When a card is revealed, animate it upward and out */
+.scratch-card-wrapper.revealed {
+  pointer-events: none;
+}
+
+/* Slide revealed cards up and into their tier containers */
+.scratch-card-wrapper.common.revealed.hide {
+  animation: card-slide-out-common 0.6s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.scratch-card-wrapper.rare.revealed.hide {
+  animation: card-slide-out-rare 0.6s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.scratch-card-wrapper.epic.revealed.hide {
+  animation: card-slide-out-epic 0.6s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.scratch-card-wrapper.legendary.revealed.hide {
+  animation: card-slide-out-legendary 0.6s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+/* Common tier - slide to left container */
+@keyframes card-slide-out-common {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-141px, -380px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* Rare tier - slide to second container */
+@keyframes card-slide-out-rare {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-51px, -380px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* Epic tier - slide to third container */
+@keyframes card-slide-out-epic {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(39px, -380px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* Legendary tier - slide to right container */
+@keyframes card-slide-out-legendary {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(135px, -380px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* Progress Indicator */
+.stack-progress {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+}
+
+.progress-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+}
+
+/* Accessibility: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .scratch-card-wrapper {
+    transition: none;
+  }
+
+  @keyframes card-reveal-exit {
+    100% {
+      opacity: 0;
+    }
+  }
+}

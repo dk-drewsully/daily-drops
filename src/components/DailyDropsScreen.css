@@ -1,0 +1,554 @@
+/* Unified Daily Drops Screen */
+
+.daily-drops-screen {
+  width: 390px;
+  height: 830px;
+  position: relative;
+  background: linear-gradient(219deg, rgba(3, 0, 180, 0.48) 17.39%, rgba(0, 0, 180, 0.00) 80.18%),
+              linear-gradient(182deg, #16004E 3.24%, #17005C 24.54%, #4225AC 52.62%, #6149D9 74.37%, #9081FF 96.11%);
+  background-blend-mode: color-burn, normal;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== SHARED BACKGROUND ELEMENTS (Persist Throughout) ===== */
+
+.background-orbs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.orb {
+  position: absolute;
+  animation: orb-breathe 6s ease-in-out infinite;
+}
+
+.orb-1 {
+  left: -97px;
+  top: 356px;
+  width: 160px;
+  height: 160px;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  left: 156px;
+  top: 94px;
+  width: 229px;
+  height: 232px;
+  animation-delay: 2s;
+  filter: blur(6px);
+}
+
+.orb-3 {
+  left: 121px;
+  top: -50px;
+  width: 119px;
+  height: 119px;
+  animation-delay: 4s;
+  filter: blur(4px) drop-shadow(0 0 6px rgba(0, 0, 0, 0.25));
+}
+
+@keyframes orb-breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.star {
+  position: absolute;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.star.twinkle {
+  animation: star-twinkle 0.6s ease-in-out;
+}
+
+@keyframes star-twinkle {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.7); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.star-1 { left: 332px; top: 151px; width: 25px; height: 26px; }
+.star-2 { left: 66px; top: 30px; width: 39px; height: 40px; }
+.star-3 { left: 27px; top: 177px; width: 23px; height: 24px; }
+.star-4 { left: 335px; top: 398px; width: 53px; height: 54px; }
+.star-5 { left: 275px; top: 89px; width: 29px; height: 30px; }
+.star-6 { left: 297px; top: 82px; width: 29px; height: 30px; }
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+.circle-1 {
+  left: 352px;
+  top: 200px;
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle, rgba(255, 238, 47, 1) 26%, rgba(160, 143, 11, 1) 100%);
+  animation: float-circle 4.2s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+.circle-2 {
+  left: 318px;
+  top: 200px;
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle, rgba(29, 194, 148, 1) 26%, rgba(16, 104, 80, 1) 100%);
+  animation: float-circle 3.5s ease-in-out infinite;
+  animation-delay: 1.2s;
+}
+
+.circle-3 {
+  left: 27px;
+  top: 437px;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, rgba(255, 238, 47, 1) 26%, rgba(160, 143, 11, 1) 100%);
+  animation: float-circle 4.8s ease-in-out infinite;
+  animation-delay: 1.8s;
+}
+
+.circle-4 {
+  left: 31px;
+  top: 104px;
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle, rgba(255, 164, 54, 1) 26%, rgba(170, 82, 0, 1) 100%);
+  animation: float-circle 3.8s ease-in-out infinite;
+  animation-delay: 0.7s;
+}
+
+@keyframes float-circle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+.bottom-ellipses {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ellipse-2336 {
+  position: absolute;
+  width: 147px;
+  height: 147px;
+  left: 23px;
+  top: 696px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(1, 164, 255, 0.3) 0%, rgba(1, 164, 255, 0) 100%);
+  border-radius: 50%;
+}
+
+.ellipse-2339 {
+  position: absolute;
+  width: 202px;
+  height: 202px;
+  left: 133px;
+  top: 635px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 55, 242, 0.28) 0%, rgba(255, 55, 242, 0) 100%);
+  border-radius: 50%;
+}
+
+.ellipse-2246 {
+  position: absolute;
+  width: 131px;
+  height: 131px;
+  left: 268px;
+  top: 698px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 148, 1, 0.4) 0%, rgba(255, 148, 1, 0) 100%);
+  border-radius: 50%;
+}
+
+.texture {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.15;
+  z-index: 3;
+}
+
+.bg-dots {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ===== LOGO - Transitions between states ===== */
+
+.logo-container {
+  position: absolute;
+  z-index: 10;
+  will-change: transform, top, left;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logo-container.loading {
+  left: 49px;
+  top: 170px;
+}
+
+.logo-container.loading .logo {
+  width: 295px;
+  height: 180px;
+  filter: drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+.logo-container.landing {
+  left: 50%;
+  top: 24px;
+  transform: translateX(-50%);
+}
+
+.logo-container.landing .logo {
+  width: 188px; /* 5% smaller than original 198px */
+  height: auto;
+}
+
+.logo {
+  display: block;
+  will-change: transform, width, height;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== LOADING STATE ELEMENTS ===== */
+
+.loading-elements {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  will-change: opacity, transform;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 1, 1),
+              transform 0.4s cubic-bezier(0.4, 0, 1, 1);
+  opacity: 1;
+  transform: translateY(0);
+  z-index: 10;
+}
+
+.loading-elements.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+}
+
+.loading-text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 373px;
+  width: auto;
+  max-width: 320px;
+  height: 28px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  background: linear-gradient(180deg,
+    rgba(255, 243, 180, 1) 13%,
+    rgba(255, 217, 26, 1) 83%,
+    rgba(255, 170, 1, 1) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.progress-bar-container {
+  position: absolute;
+  left: 72px;
+  top: 469px;
+  width: 231px;
+  height: 6px;
+}
+
+.progress-bar-background {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+  border-radius: 3px;
+  will-change: width;
+  transition: width 0.15s ease-out;
+}
+
+.epic-character-container {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  max-width: 475px;
+  max-height: 485px;
+  z-index: 5;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 1, 1),
+              transform 0.4s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.loading-elements.hidden .epic-character-container {
+  opacity: 0;
+  transform: translateY(50px); /* Fade down instead of up */
+}
+
+.epic-character {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom right;
+  filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.4));
+}
+
+/* ===== LANDING STATE ELEMENTS ===== */
+
+.landing-elements {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 157px 22px 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.landing-elements.visible {
+  pointer-events: all;
+}
+
+.landing-elements.hidden {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
+}
+
+/* Row-based cascade animation */
+.landing-elements > * {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.5s cubic-bezier(0, 0, 0.2, 1),
+              transform 0.5s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.landing-elements.visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Cascade timing for initial landing */
+.landing-elements.visible > .collected-drops-title {
+  transition-delay: 0.46s; /* Title */
+}
+
+.landing-elements.visible > .progress-tracker-container {
+  transition-delay: 0.54s; /* Progress Cards */
+}
+
+/* Default Flow (Scratch Cards) */
+.landing-elements.visible > .reward-reveal-title {
+  transition-delay: 0.46s; /* Row 3: 460ms */
+}
+
+.landing-elements.visible > .scratch-card-area {
+  transition-delay: 0.54s; /* Row 4: 540ms */
+}
+
+.landing-elements.visible > .reveal-all-button-container {
+  transition-delay: 0.62s; /* Row 5: 620ms */
+}
+
+/* Details Components - animate in when all cards revealed */
+.details-components {
+  width: 100%;
+  /* Override landing-elements animation for this container */
+  opacity: 1 !important;
+  transform: none !important;
+  /* Don't take up space until visible */
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+}
+
+.details-components.visible {
+  max-height: 1000px; /* Large enough to accommodate all content */
+}
+
+.details-components > * {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.35s cubic-bezier(0, 0, 0.2, 1),
+              transform 0.35s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.details-components.visible > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered animation for details screen components */
+.details-components.visible > .small-timer {
+  transition-delay: 0.54s; /* Timer - sync with progress tracker */
+}
+
+.details-components.visible > .day-tracker {
+  transition-delay: 0.58s; /* Day Tracker - slight stagger */
+}
+
+.details-components.visible > .weekly-rewards {
+  transition-delay: 0.62s; /* Weekly Rewards - tight stagger, feels cohesive */
+}
+
+/* Progress tracker - cascade on initial load + smooth repositioning */
+.progress-tracker-container {
+  transition: opacity 0.5s cubic-bezier(0, 0, 0.2, 1),
+              transform 0.5s cubic-bezier(0, 0, 0.2, 1),
+              margin-top 0.6s cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Smoother transition ONLY when moving down for details screen */
+.progress-tracker-container.end-state {
+  transition: opacity 0.5s cubic-bezier(0, 0, 0.2, 1),
+              transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+              margin-top 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.collected-drops-title {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 18px;
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+
+.progress-tracker-container {
+  display: flex;
+  gap: 26px;
+  align-items: flex-start;
+  height: auto;
+  margin-bottom: 16px;
+}
+
+.reward-reveal-title {
+  width: 100%;
+  max-width: 260px;
+  height: 28px;
+  margin: 12px auto 8px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+  background: linear-gradient(180deg,
+    rgba(255, 243, 180, 1) 12.5%,
+    rgba(255, 217, 26, 1) 82.7%,
+    rgba(255, 170, 1, 1) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+}
+
+.scratch-card-area {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  min-height: 236px;
+}
+
+.reveal-all-button-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 48px;
+}
+
+.scratch-card-placeholder {
+  width: 346px;
+  height: 300px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+}
+
+/* Reset Timer Display - appears in scratch card area after all cards revealed */
+
+/* Accessibility: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all background animations */
+  .orb,
+  .circle,
+  .star {
+    animation: none !important;
+  }
+
+  /* Disable logo transition */
+  .logo-container,
+  .logo {
+    transition: none !important;
+  }
+
+  /* Instant state changes for loading elements */
+  .loading-elements {
+    transition: none;
+  }
+
+  /* Instant cascade for landing elements */
+  .landing-elements > * {
+    transition: none;
+    transform: none;
+  }
+
+  .landing-elements.visible > * {
+    opacity: 1;
+    transition-delay: 0s;
+  }
+}

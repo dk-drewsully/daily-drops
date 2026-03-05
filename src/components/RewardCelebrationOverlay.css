@@ -1,0 +1,231 @@
+/* Reward Celebration Overlay - Exact Figma Implementation */
+/* Based on "Winning Popup Screen" node-id=488:19003 (343×517px) */
+
+/* Full-screen backdrop */
+.reward-celebration-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Winning Popup Screen container - 343×517px */
+.winning-popup-screen {
+  position: relative;
+  width: 343px;
+  height: 517px;
+  /* Transparent container - background created by layered elements */
+}
+
+/* WinningModal_backColors - blurred orbs and gradients (619×620px at -138,-52) */
+.winning-modal-back-colors {
+  position: absolute;
+  left: -138px;
+  top: -52px;
+  width: 619px;
+  height: 620px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Rectangle gradient background - positioned within back-colors container */
+.winning-modal-back-colors::before {
+  content: '';
+  position: absolute;
+  left: 122px;
+  top: 44px;
+  width: 375px;
+  height: 519px;
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 0;
+
+  /* First gradient: vertical purple */
+  background: linear-gradient(180deg,
+    rgb(40, 18, 163) 0%,
+    rgb(53, 5, 194) 100%
+  );
+}
+
+/* Second gradient layer: diagonal at 20% opacity */
+.winning-modal-back-colors::after {
+  content: '';
+  position: absolute;
+  left: 122px;
+  top: 44px;
+  width: 375px;
+  height: 519px;
+  border-radius: 12px;
+  background: linear-gradient(152deg,
+    rgb(8, 12, 137) 0%,
+    rgb(255, 202, 30) 50.5%,
+    rgb(15, 31, 255) 100%
+  );
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Cyan orbs with 150px blur - using solid fills from Figma */
+.back-orb-cyan {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(150px);
+  -webkit-filter: blur(150px);
+  z-index: 2;
+}
+
+.back-orb-cyan-1 {
+  left: 31px;
+  top: 363px;
+  width: 170px;
+  height: 172px;
+  background: rgb(34, 145, 255);
+}
+
+.back-orb-cyan-2 {
+  left: 117px;
+  top: 143px;
+  width: 218px;
+  height: 175px;
+  background: rgb(34, 145, 255);
+}
+
+/* Yellow orb - using solid fill from Figma */
+.back-orb-yellow {
+  position: absolute;
+  left: 148px;
+  top: -8px;
+  width: 140px;
+  height: 200px;
+  border-radius: 50%;
+  filter: blur(150px);
+  -webkit-filter: blur(150px);
+  background: rgb(250, 255, 0);
+  z-index: 2;
+}
+
+/* Star Vector - starburst (619×620px at -138,-52, already has blur) */
+.star-vector {
+  position: absolute;
+  left: -138px;
+  top: -52px;
+  width: 619px;
+  height: 620px;
+  background-image: url('../assets/images/reward-star-burst.svg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  opacity: 1;
+  mix-blend-mode: screen;
+  z-index: 3;
+}
+
+/* Coins group (411×519px at -54,0) */
+.coins-group {
+  position: absolute;
+  left: -54px;
+  top: 0px;
+  width: 411px;
+  height: 519px;
+  background-image: url('../assets/images/reward-coins-group.svg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Confetti group (409×431px at -41,31) */
+.confetti-group {
+  position: absolute;
+  left: -41px;
+  top: 31px;
+  width: 409px;
+  height: 431px;
+  background-image: url('../assets/images/reward-confetti-group.svg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Text container (220×276px at 62,120) */
+.text-container {
+  position: absolute;
+  left: 62px;
+  top: 120px;
+  width: 220px;
+  height: 276px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 6;
+}
+
+/* "You won" text */
+.you-won-text {
+  font-family: 'Grota Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  margin-bottom: 16px;
+}
+
+/* Concentric circles and crown */
+/* Amount text with gold gradient */
+.amount-text {
+  font-family: 'Grota Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 4rem;
+  font-weight: 900;
+  background: linear-gradient(180deg, rgba(255, 251, 235, 1) 0%, rgba(246, 183, 0, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 4px 16px rgba(255, 184, 0, 0.6);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+/* "lottery Credits" text */
+.credits-text {
+  font-family: 'Grota Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+/* Exit animations */
+.reward-celebration-overlay.exiting {
+  animation: exit-overlay 400ms ease-out forwards;
+}
+
+@keyframes exit-overlay {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reward-celebration-overlay,
+  .winning-popup-screen,
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
