@@ -24,10 +24,10 @@
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
   padding-bottom: 10px;
-  /* Break out of parent padding to reach screen edges */
-  margin-left: -22px;
-  padding-left: 22px; /* Maintain content start position */
-  padding-right: 34px; /* 22px + 12px to prevent cutoff */
+  margin-left: 0px;
+  margin-right: 0px;
+  padding-left: 0px;
+  padding-right: 22px; /* Prevent cutoff at right edge */
 }
 
 .promo-carousel-container::-webkit-scrollbar {

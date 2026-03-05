@@ -9,7 +9,7 @@ import SmallTimer from './SmallTimer';
 import DayTracker from './DayTracker';
 import WeeklyRewards from './WeeklyRewards';
 import PromoCarousel from './PromoCarousel';
-// import LockedButton from './LockedButton';
+import LockedButton from './LockedButton';
 
 // Import assets
 import DailyDropsLogo from '../assets/images/DailyDrops.svg';
@@ -303,11 +303,11 @@ const DailyDropsScreen = ({ state: externalState }) => {
   // Animate in new details screen components when all cards are revealed
   useEffect(() => {
     if (allCardsRevealed && prototypeState === 'default') {
-      // Wait for scratch cards to fully slide out before animating in details components
-      // Card slide-out takes ~600ms, add buffer for smooth transition
+      // onAllRevealed is called after slide-out completes, so minimal delay needed
+      // Just a brief pause for visual breathing room before details cascade begins
       const timer = setTimeout(() => {
         setDetailsVisible(true);
-      }, 800);
+      }, 300);
 
       return () => clearTimeout(timer);
     } else {
@@ -404,80 +404,93 @@ const DailyDropsScreen = ({ state: externalState }) => {
         </div>
       </div>
 
-      {/* Landing State Elements */}
-      <div className={`landing-elements ${currentState === 'loading' ? 'hidden' : ''} ${landingVisible ? 'visible' : ''}`}>
-        {/* Title always above progress tracker */}
-        <div className="collected-drops-title">Collected Drops</div>
+      {/* Details Screen Wrapper - flexbox container for landing-elements and details-components */}
+      <div className={`details-screen-wrapper ${currentState === 'loading' ? 'hidden' : ''}`}>
+        {/* Landing State Elements */}
+        <div className={`landing-elements ${landingVisible ? 'visible' : ''}`}>
+          {/* End State Components at top (SmallTimer and DayTracker) */}
+          {allCardsRevealed && (
+            <>
+              <SmallTimer timeRemaining={timeUntilReset} />
+              <DayTracker completedDays={[true, true, true, false, false, false, false]} />
+            </>
+          )}
 
-            <div className={`progress-tracker-container ${allCardsRevealed ? 'end-state' : ''}`}>
-              <ProgressTrackerCard
-                tier="common"
-                current={progressData.common.current}
-                total={progressData.common.total}
-                isGlowing={progressData.common.isGlowing}
-                isDimmed={anyCardGlowing && !progressData.common.isGlowing}
-              />
-              <ProgressTrackerCard
-                tier="rare"
-                current={progressData.rare.current}
-                total={progressData.rare.total}
-                isGlowing={progressData.rare.isGlowing}
-                isDimmed={anyCardGlowing && !progressData.rare.isGlowing}
-              />
-              <ProgressTrackerCard
-                tier="epic"
-                current={progressData.epic.current}
-                total={progressData.epic.total}
-                isGlowing={progressData.epic.isGlowing}
-                isDimmed={anyCardGlowing && !progressData.epic.isGlowing}
-              />
-              <ProgressTrackerCard
-                tier="legendary"
-                current={progressData.legendary.current}
-                total={progressData.legendary.total}
-                isGlowing={progressData.legendary.isGlowing}
-                isDimmed={anyCardGlowing && !progressData.legendary.isGlowing}
-              />
+          {/* Title always above progress tracker */}
+          <div className="collected-drops-title">Collected Drops</div>
+
+              <div className={`progress-tracker-container ${allCardsRevealed ? 'end-state' : ''}`}>
+                <ProgressTrackerCard
+                  tier="common"
+                  current={progressData.common.current}
+                  total={progressData.common.total}
+                  isGlowing={progressData.common.isGlowing}
+                  isDimmed={anyCardGlowing && !progressData.common.isGlowing}
+                />
+                <ProgressTrackerCard
+                  tier="rare"
+                  current={progressData.rare.current}
+                  total={progressData.rare.total}
+                  isGlowing={progressData.rare.isGlowing}
+                  isDimmed={anyCardGlowing && !progressData.rare.isGlowing}
+                />
+                <ProgressTrackerCard
+                  tier="epic"
+                  current={progressData.epic.current}
+                  total={progressData.epic.total}
+                  isGlowing={progressData.epic.isGlowing}
+                  isDimmed={anyCardGlowing && !progressData.epic.isGlowing}
+                />
+                <ProgressTrackerCard
+                  tier="legendary"
+                  current={progressData.legendary.current}
+                  total={progressData.legendary.total}
+                  isGlowing={progressData.legendary.isGlowing}
+                  isDimmed={anyCardGlowing && !progressData.legendary.isGlowing}
+                />
+              </div>
+
+              {/* Hide scratch card area when showing end state */}
+              {!allCardsRevealed && (
+                <>
+                  <div className="reward-reveal-title">
+                    {revealedCount === 0
+                      ? "Reveal today's reward"
+                      : `${scratchCards.length - revealedCount} ${scratchCards.length - revealedCount === 1 ? 'card' : 'cards'} remaining`
+                    }
+                  </div>
+
+                  <div className="scratch-card-area">
+                    <ScratchCardStack
+                      ref={stackRef}
+                      cards={scratchCards}
+                      onCardRevealed={handleCardRevealed}
+                      onAllRevealed={handleAllRevealed}
+                    />
+                  </div>
+                </>
+              )}
+
+          {/* Reveal All Button - hidden after all cards revealed */}
+          {!allCardsRevealed && (
+            <div className="reveal-all-button-container">
+              <RevealAllButton onClick={handleRevealAll} disabled={isRevealing} allRevealed={allCardsRevealed} />
             </div>
+          )}
+        </div>
 
-            {/* Hide scratch card area when showing end state */}
-            {!allCardsRevealed && (
-              <>
-                <div className="reward-reveal-title">
-                  {revealedCount === 0
-                    ? "Reveal today's reward"
-                    : `${scratchCards.length - revealedCount} ${scratchCards.length - revealedCount === 1 ? 'card' : 'cards'} remaining`
-                  }
-                </div>
-
-                <div className="scratch-card-area">
-                  <ScratchCardStack
-                    ref={stackRef}
-                    cards={scratchCards}
-                    onCardRevealed={handleCardRevealed}
-                    onAllRevealed={handleAllRevealed}
-                  />
-                </div>
-              </>
-            )}
-
-        {/* Reveal All Button - hidden after all cards revealed */}
-        {!allCardsRevealed && (
-          <div className="reveal-all-button-container">
-            <RevealAllButton onClick={handleRevealAll} disabled={isRevealing} allRevealed={allCardsRevealed} />
+        {/* Scrollable Details Components - naturally flows after landing-elements */}
+        {allCardsRevealed && (
+          <div className={`details-components ${detailsVisible ? 'visible' : ''}`}>
+            <WeeklyRewards />
+            <PromoCarousel />
           </div>
         )}
       </div>
 
-      {/* Details Screen Components - outside landing-elements to avoid padding constraints */}
+      {/* Locked Button - fixed at bottom */}
       {allCardsRevealed && (
-        <div className={`details-components ${currentState === 'loading' ? 'hidden' : ''} ${detailsVisible ? 'visible' : ''}`}>
-          <SmallTimer timeRemaining={timeUntilReset} />
-          <DayTracker completedDays={[true, true, true, false, false, false, false]} />
-          <WeeklyRewards />
-          <PromoCarousel />
-          {/* <LockedButton timeRemaining={timeUntilReset} /> */}
-        </div>
+        <LockedButton timeRemaining={timeUntilReset} />
       )}
 
       {/* Reward Celebration Overlay - above all content */}

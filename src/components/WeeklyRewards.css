@@ -13,7 +13,7 @@
   font-size: 18px;
   line-height: 18px;
   color: #ffffff;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   /* Title stays within normal padding */
 }
 
@@ -29,11 +29,11 @@
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-  /* Break out of parent padding to reach screen edges */
-  margin-left: -22px;
-  padding-left: 22px; /* Maintain content start position */
-  padding-right: 26px; /* 22px + 4px to prevent cutoff */
+  -ms-overflow-style: none;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding-left: 0px;
+  padding-right: 22px; /* Prevent cutoff at right edge */
 }
 
 .row-of-results::-webkit-scrollbar {

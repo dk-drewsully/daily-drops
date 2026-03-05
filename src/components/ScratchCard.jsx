@@ -306,16 +306,13 @@ function ScratchCard({
         if (canvas) {
           canvas.style.opacity = '0';
         }
-        // Hold revealed card for 2.5 seconds, then start collection animation
+        // For manual scratch: Hold revealed card briefly (1.5s), then immediately trigger slide-out
+        // Skip collection animation - the wrapper slide-out will handle the visual transition
         setTimeout(() => {
-          setIsCollecting(true);
-          // Wait for collection animation to complete before callback
-          setTimeout(() => {
-            if (onReveal) {
-              onReveal(tier, rewardAmount);
-            }
-          }, 800); // Collection animation duration
-        }, 2500);
+          if (onReveal) {
+            onReveal(tier, rewardAmount);
+          }
+        }, 1500);
       }
     }
   };
@@ -500,19 +497,6 @@ function ScratchCard({
       {/* Stack shadow layers (only for back/middle cards) */}
       {stackPosition === 'back' && <div className="stack-shadow back" />}
       {stackPosition === 'middle' && <div className="stack-border middle" />}
-
-      {/* Reset button (for prototyping) - only show on front active card */}
-      {stackPosition === 'front' && isActive && (
-        <button
-          className="scratch-card-reset"
-          onClick={(e) => {
-            e.stopPropagation();
-            resetCard();
-          }}
-          aria-label="Reset scratch card"
-          title="Press R or click to reset (for prototyping)"
-        />
-      )}
     </div>
   );
 }

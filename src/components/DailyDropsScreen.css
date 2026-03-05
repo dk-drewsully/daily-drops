@@ -338,28 +338,37 @@
   filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.4));
 }
 
-/* ===== LANDING STATE ELEMENTS ===== */
+/* ===== DETAILS SCREEN WRAPPER ===== */
 
-.landing-elements {
+.details-screen-wrapper {
   position: absolute;
   width: 100%;
   top: 0;
   left: 0;
   display: flex;
   flex-direction: column;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.details-screen-wrapper.hidden {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
+}
+
+/* ===== LANDING STATE ELEMENTS ===== */
+
+.landing-elements {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   padding: 157px 22px 0;
   pointer-events: none;
-  z-index: 10;
 }
 
 .landing-elements.visible {
   pointer-events: all;
-}
-
-.landing-elements.hidden {
-  opacity: 0;
-  pointer-events: none;
-  display: none;
 }
 
 /* Row-based cascade animation */
@@ -375,16 +384,24 @@
   transform: translateY(0);
 }
 
-/* Cascade timing for initial landing */
+/* Cascade timing for end state - SmallTimer and DayTracker first */
+.landing-elements.visible > .small-timer {
+  transition-delay: 0.4s; /* Timer - first in end state */
+}
+
+.landing-elements.visible > .day-tracker {
+  transition-delay: 0.48s; /* Day Tracker - after timer */
+}
+
 .landing-elements.visible > .collected-drops-title {
-  transition-delay: 0.46s; /* Title */
+  transition-delay: 0.56s; /* Title - after day tracker */
 }
 
 .landing-elements.visible > .progress-tracker-container {
-  transition-delay: 0.54s; /* Progress Cards */
+  transition-delay: 0.64s; /* Progress Cards - after title */
 }
 
-/* Default Flow (Scratch Cards) */
+/* Default Flow (Scratch Cards) - when cards not revealed */
 .landing-elements.visible > .reward-reveal-title {
   transition-delay: 0.46s; /* Row 3: 460ms */
 }
@@ -397,13 +414,10 @@
   transition-delay: 0.62s; /* Row 5: 620ms */
 }
 
-/* Details Components - positioned outside landing-elements to avoid padding constraints */
+/* Scrollable Details Components - outside landing-elements, no absolute positioning */
 .details-components {
-  position: absolute;
-  top: 244px; /* Below progress tracker (157px top + 18px title + 16px gap + 53px cards) */
-  left: 0;
   width: 100%;
-  padding-left: 22px; /* Apply padding for titles only */
+  padding-left: 22px;
   display: flex;
   flex-direction: column;
   opacity: 0;
@@ -411,7 +425,6 @@
   transition: opacity 0.5s cubic-bezier(0, 0, 0.2, 1),
               transform 0.5s cubic-bezier(0, 0, 0.2, 1);
   pointer-events: none;
-  z-index: 10;
 }
 
 .details-components.visible {
@@ -438,21 +451,13 @@
   transform: translateY(0);
 }
 
-/* Staggered animation for details screen components */
-.details-components.visible > .small-timer {
-  transition-delay: 0.54s; /* Timer - sync with progress tracker */
-}
-
-.details-components.visible > .day-tracker {
-  transition-delay: 0.58s; /* Day Tracker - slight stagger */
-}
-
+/* Children animations for details components */
 .details-components.visible > .weekly-rewards {
-  transition-delay: 0.62s; /* Weekly Rewards - tight stagger, feels cohesive */
+  transition-delay: 0.72s; /* Weekly Rewards - after Progress Tracker */
 }
 
 .details-components.visible > .promo-carousel {
-  transition-delay: 0.66s; /* Promo Carousel - follows Weekly Rewards */
+  transition-delay: 0.80s; /* Promo Carousel - follows Weekly Rewards */
 }
 
 /* Progress tracker - cascade on initial load + smooth repositioning */
@@ -464,9 +469,11 @@
 
 /* Smoother transition ONLY when moving down for details screen */
 .progress-tracker-container.end-state {
+  margin-bottom: 24px;
   transition: opacity 0.5s cubic-bezier(0, 0, 0.2, 1),
               transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-              margin-top 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+              margin-top 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+              margin-bottom 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .collected-drops-title {

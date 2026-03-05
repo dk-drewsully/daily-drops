@@ -67,13 +67,13 @@ const ScratchCardStack = forwardRef(({
           }
         }, 600); // Wait for slide-out animation to complete
       } else {
-        // All cards revealed
+        // All cards revealed - wait for slide-out animation to complete (600ms) + small buffer
         setIsAutoRevealing(false);
         setTimeout(() => {
           if (onAllRevealed) {
             onAllRevealed();
           }
-        }, 1000);
+        }, 700);
       }
     }, pauseBeforeSlideOut);
   };
@@ -96,15 +96,21 @@ const ScratchCardStack = forwardRef(({
     revealAll: () => {
       setIsAutoRevealing(true);
       setAutoScratchingCards([]);
-      // Start with first card only
-      const firstCard = cards[0];
-      if (firstCard) {
+      // Start with first unrevealed card (not first card overall)
+      const firstUnrevealedCard = cards.find(card => !revealedCards.includes(card.id));
+      if (firstUnrevealedCard) {
         setTimeout(() => {
-          setAutoScratchingCards([firstCard.id]);
+          setAutoScratchingCards([firstUnrevealedCard.id]);
         }, 100);
+      } else {
+        // All cards already revealed, call onAllRevealed
+        setIsAutoRevealing(false);
+        if (onAllRevealed) {
+          onAllRevealed();
+        }
       }
     }
-  }));
+  }), [cards, revealedCards, onAllRevealed]);
 
   // Cleanup timeouts on unmount
   useEffect(() => {
