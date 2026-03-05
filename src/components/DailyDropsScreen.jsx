@@ -406,14 +406,6 @@ const DailyDropsScreen = ({ state: externalState }) => {
 
       {/* Landing State Elements */}
       <div className={`landing-elements ${currentState === 'loading' ? 'hidden' : ''} ${landingVisible ? 'visible' : ''}`}>
-        {/* Details Screen Components - animate in when cards are revealed */}
-        {allCardsRevealed && (
-          <div className={`details-components ${detailsVisible ? 'visible' : ''}`}>
-            <SmallTimer timeRemaining={timeUntilReset} />
-            <DayTracker completedDays={[true, true, true, false, false, false, false]} />
-          </div>
-        )}
-
         {/* Title always above progress tracker */}
         <div className="collected-drops-title">Collected Drops</div>
 
@@ -469,15 +461,6 @@ const DailyDropsScreen = ({ state: externalState }) => {
               </>
             )}
 
-            {/* End State Components - shown after all cards revealed */}
-            {allCardsRevealed && (
-              <div className={`details-components ${detailsVisible ? 'visible' : ''}`}>
-                <WeeklyRewards />
-                <PromoCarousel />
-                {/* <LockedButton timeRemaining={timeUntilReset} /> */}
-              </div>
-            )}
-
         {/* Reveal All Button - hidden after all cards revealed */}
         {!allCardsRevealed && (
           <div className="reveal-all-button-container">
@@ -485,6 +468,17 @@ const DailyDropsScreen = ({ state: externalState }) => {
           </div>
         )}
       </div>
+
+      {/* Details Screen Components - outside landing-elements to avoid padding constraints */}
+      {allCardsRevealed && (
+        <div className={`details-components ${currentState === 'loading' ? 'hidden' : ''} ${detailsVisible ? 'visible' : ''}`}>
+          <SmallTimer timeRemaining={timeUntilReset} />
+          <DayTracker completedDays={[true, true, true, false, false, false, false]} />
+          <WeeklyRewards />
+          <PromoCarousel />
+          {/* <LockedButton timeRemaining={timeUntilReset} /> */}
+        </div>
+      )}
 
       {/* Reward Celebration Overlay - above all content */}
       {celebrationOverlay.isVisible && (

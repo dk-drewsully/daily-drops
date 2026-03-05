@@ -24,8 +24,9 @@
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
   padding-bottom: 10px;
-  /* Extend to right edge with enough padding for full last card visibility */
-  margin-right: -22px;
+  /* Break out of parent padding to reach screen edges */
+  margin-left: -22px;
+  padding-left: 22px; /* Maintain content start position */
   padding-right: 34px; /* 22px + 12px to prevent cutoff */
 }
 

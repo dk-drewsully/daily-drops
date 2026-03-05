@@ -397,21 +397,33 @@
   transition-delay: 0.62s; /* Row 5: 620ms */
 }
 
-/* Details Components - animate in when all cards revealed */
+/* Details Components - positioned outside landing-elements to avoid padding constraints */
 .details-components {
+  position: absolute;
+  top: 244px; /* Below progress tracker (157px top + 18px title + 16px gap + 53px cards) */
+  left: 0;
   width: 100%;
-  /* Override landing-elements animation for this container */
-  opacity: 1 !important;
-  transform: none !important;
-  /* Don't take up space until visible */
-  max-height: 0;
-  overflow-x: visible; /* Allow horizontal scroll to extend to edges */
-  overflow-y: hidden; /* Keep vertical clipping for max-height animation */
-  transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  padding-left: 22px; /* Apply padding for titles only */
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.5s cubic-bezier(0, 0, 0.2, 1),
+              transform 0.5s cubic-bezier(0, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 10;
 }
 
 .details-components.visible {
-  max-height: 1000px; /* Large enough to accommodate all content */
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.details-components.hidden {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
 }
 
 .details-components > * {
@@ -437,6 +449,10 @@
 
 .details-components.visible > .weekly-rewards {
   transition-delay: 0.62s; /* Weekly Rewards - tight stagger, feels cohesive */
+}
+
+.details-components.visible > .promo-carousel {
+  transition-delay: 0.66s; /* Promo Carousel - follows Weekly Rewards */
 }
 
 /* Progress tracker - cascade on initial load + smooth repositioning */
