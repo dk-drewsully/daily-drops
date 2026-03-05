@@ -50,11 +50,10 @@ const DailyDropsScreen = ({ state: externalState }) => {
   const [landingVisible, setLandingVisible] = useState(false);
   const [detailsVisible, setDetailsVisible] = useState(false);
 
-  // Show prototype nav only in development
-  const showPrototypeNav = process.env.NODE_ENV === 'development';
+  // Show prototype nav for design team review
+  const showPrototypeNav = true;
 
-  // In development, always use internal state so progress bar completion works
-  // In production, use external state from App.jsx
+  // Always use internal state for prototype nav to work correctly
   const currentState = showPrototypeNav ? internalState : (externalState || internalState);
 
   // Sync top buttons (external state) to internal state in default mode
