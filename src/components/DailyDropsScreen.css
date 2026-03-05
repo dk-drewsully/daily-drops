@@ -405,7 +405,8 @@
   transform: none !important;
   /* Don't take up space until visible */
   max-height: 0;
-  overflow: hidden;
+  overflow-x: visible; /* Allow horizontal scroll to extend to edges */
+  overflow-y: hidden; /* Keep vertical clipping for max-height animation */
   transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0s;
 }
 
