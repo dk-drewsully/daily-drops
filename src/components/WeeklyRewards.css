@@ -14,6 +14,7 @@
   line-height: 18px;
   color: #ffffff;
   margin-bottom: 8px;
+  /* Title stays within normal padding */
 }
 
 .row-of-results {
@@ -29,6 +30,9 @@
   scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
+  /* Break out to right edge with enough padding for full last item visibility */
+  margin-right: -22px;
+  padding-right: 26px; /* 22px + 4px to prevent cutoff */
 }
 
 .row-of-results::-webkit-scrollbar {

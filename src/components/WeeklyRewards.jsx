@@ -36,16 +36,6 @@ function WeeklyRewards() {
         <div className="rewards-summary">
           <div className="reward-amount">
             <svg className="reward-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <circle cx="9" cy="9" r="9" fill="#FF49EE"/>
-            </svg>
-            <span className="reward-details">50 Gems</span>
-          </div>
-        </div>
-
-        {/* Reward Summary 4 */}
-        <div className="rewards-summary">
-          <div className="reward-amount">
-            <svg className="reward-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
               <circle cx="9" cy="9" r="9" fill="#57E3FF"/>
             </svg>
             <span className="reward-details">200 XP</span>

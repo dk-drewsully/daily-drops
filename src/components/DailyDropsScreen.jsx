@@ -8,7 +8,7 @@ import RewardCelebrationOverlay from './RewardCelebrationOverlay';
 import SmallTimer from './SmallTimer';
 import DayTracker from './DayTracker';
 import WeeklyRewards from './WeeklyRewards';
-// import PromoCarousel from './PromoCarousel';
+import PromoCarousel from './PromoCarousel';
 // import LockedButton from './LockedButton';
 
 // Import assets
@@ -473,7 +473,7 @@ const DailyDropsScreen = ({ state: externalState }) => {
             {allCardsRevealed && (
               <div className={`details-components ${detailsVisible ? 'visible' : ''}`}>
                 <WeeklyRewards />
-                {/* <PromoCarousel /> */}
+                <PromoCarousel />
                 {/* <LockedButton timeRemaining={timeUntilReset} /> */}
               </div>
             )}
