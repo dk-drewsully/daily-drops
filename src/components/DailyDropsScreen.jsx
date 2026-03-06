@@ -51,7 +51,7 @@ const DailyDropsScreen = ({ state: externalState }) => {
   const [detailsVisible, setDetailsVisible] = useState(false);
 
   // Show prototype nav for design team review
-  const showPrototypeNav = false;
+  const showPrototypeNav = true;
 
   // Always use internal state for prototype nav to work correctly
   const currentState = showPrototypeNav ? internalState : (externalState || internalState);
