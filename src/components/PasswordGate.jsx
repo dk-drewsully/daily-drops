@@ -3,6 +3,7 @@ import './PasswordGate.css';
 import DailyDropsLogo from '../assets/images/DailyDrops.svg';
 
 const PasswordGate = ({ children }) => {
+  // Version: 2.1 - Build timestamp: 2026-03-06
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -19,7 +20,7 @@ const PasswordGate = ({ children }) => {
     e.preventDefault();
 
     // Password check
-    if (password === '1') {
+    if (password === 'lottodrops') {
       sessionStorage.setItem('dailyDropsAuth', 'authenticated');
       setIsAuthenticated(true);
       setError('');
