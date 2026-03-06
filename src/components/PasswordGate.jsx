@@ -3,7 +3,7 @@ import './PasswordGate.css';
 import DailyDropsLogo from '../assets/images/DailyDrops.svg';
 
 const PasswordGate = ({ children }) => {
-  // Version: 2.1 - Build timestamp: 2026-03-06
+  // Version: 2.2 - Cache bust: 2026-03-06 12:15
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

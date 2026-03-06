@@ -7,8 +7,8 @@
 **Ask these questions first:**
 
 1. **Does a tool already exist?**
-   - ✅ Use `figma-inspector.js` for inspecting positions/colors/structure
-   - ✅ Use `extract-assets.js` for exporting SVGs/images
+   - ✅ Use `scripts/figma-inspector.js` for inspecting positions/colors/structure
+   - ✅ Use `scripts/extract-assets.js` for exporting SVGs/images
    - ✅ Check if functionality exists in existing utilities
 
 2. **Is this truly reusable?**
@@ -25,11 +25,11 @@
 **NEVER create files with these patterns:**
 
 ```
-❌ get-*.js          (use figma-inspector.js)
-❌ check-*.js        (use figma-inspector.js)
-❌ verify-*.js       (use figma-inspector.js)
-❌ find-*.js         (use figma-inspector.js)
-❌ audit-*.js        (use figma-inspector.js)
+❌ get-*.js          (use scripts/figma-inspector.js)
+❌ check-*.js        (use scripts/figma-inspector.js)
+❌ verify-*.js       (use scripts/figma-inspector.js)
+❌ find-*.js         (use scripts/figma-inspector.js)
+❌ audit-*.js        (use scripts/figma-inspector.js)
 ❌ test-*.js         (outside /tests directory)
 ❌ debug-*.js        (use debugging tools)
 ❌ temp-*.js         (don't commit temp files)
@@ -71,11 +71,11 @@
 
 **Utility Scripts:**
 ```
-✅ figma-inspector.js        (unified inspection tool)
-✅ extract-assets.js          (SVG/image extraction)
-❌ get-positions.js           (duplicate of inspector)
-❌ check-colors.js            (duplicate of inspector)
-❌ temp-script.js             (throwaway code)
+✅ scripts/figma-inspector.js        (unified inspection tool)
+✅ scripts/extract-assets.js          (SVG/image extraction)
+❌ get-positions.js                   (duplicate of inspector)
+❌ check-colors.js                    (duplicate of inspector)
+❌ temp-script.js                     (throwaway code)
 ```
 
 **Asset Files:**
@@ -94,7 +94,7 @@
 1. **Extend existing functionality**
    ```javascript
    // ❌ DON'T create get-star-positions.js
-   // ✅ DO use: node figma-inspector.js search --query=star
+   // ✅ DO use: node scripts/figma-inspector.js search --query=star
    ```
 
 2. **Add parameters/options**
@@ -107,7 +107,7 @@
    ```bash
    # ❌ DON'T create custom script
    # ✅ DO combine existing tools
-   node figma-inspector.js positions --filter=ellipse | grep "left: 27"
+   node scripts/figma-inspector.js positions --filter=ellipse | grep "left: 27"
    ```
 
 ## Cleanup Procedures
@@ -133,7 +133,7 @@
 ## Best Practices
 
 **✅ DO:**
-- Use existing tools (`figma-inspector.js`, `extract-assets.js`)
+- Use existing tools (`scripts/figma-inspector.js`, `scripts/extract-assets.js`)
 - Add functionality to existing tools when possible
 - Keep utilities parameterized and reusable
 - Delete temporary code immediately
@@ -206,7 +206,7 @@ npm run lint
    /**
     * figma-inspector.js
     * Unified tool for inspecting Figma node positions, colors, and structure
-    * Usage: node figma-inspector.js <command> [options]
+    * Usage: node scripts/figma-inspector.js <command> [options]
     */
    ```
 
@@ -214,9 +214,9 @@ npm run lint
    ```javascript
    /**
     * Examples:
-    *   node figma-inspector.js positions --filter=star
-    *   node figma-inspector.js fills --nodeIds=394:68839
-    *   node figma-inspector.js search --query=ellipse
+    *   node scripts/figma-inspector.js positions --filter=star
+    *   node scripts/figma-inspector.js fills --nodeIds=394:68839
+    *   node scripts/figma-inspector.js search --query=ellipse
     */
    ```
 

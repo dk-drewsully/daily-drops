@@ -455,14 +455,14 @@ Example:
 
 ```bash
 # Search for elements by name
-node figma-inspector.js search --query=ellipse
+node scripts/figma-inspector.js search --query=ellipse
 
 # Get positions for all elements (or filter by name)
-node figma-inspector.js positions
-node figma-inspector.js positions --filter=star
+node scripts/figma-inspector.js positions
+node scripts/figma-inspector.js positions --filter=star
 
 # Get fill/color data for specific nodes
-node figma-inspector.js fills --nodeIds=394:68839,394:68841
+node scripts/figma-inspector.js fills --nodeIds=394:68839,394:68841
 ```
 
 **When to use:**
@@ -479,8 +479,8 @@ node figma-inspector.js fills --nodeIds=394:68839,394:68841
 ### Essential Scripts Only
 
 **Keep these scripts:**
-- `extract-assets.js` - Export SVGs/images from Figma
-- `figma-inspector.js` - Inspect positions, colors, structure, and generate CSS
+- `scripts/extract-assets.js` - Export SVGs/images from Figma
+- `scripts/figma-inspector.js` - Inspect positions, colors, structure, and generate CSS
 
 **Delete immediately:**
 - Any temporary scripts created for one-time inspection
@@ -504,7 +504,7 @@ node figma-inspector.js fills --nodeIds=394:68839,394:68841
 1. **Pixel-perfect first** - Match the design exactly before optimizing
 2. **Ask before substituting** - Don't silently replace fonts, images, or colors
 3. **Document deviations** - If exact match isn't possible, explain why
-4. **Use unified tools** - Use figma-inspector.js instead of creating temporary scripts
+4. **Use unified tools** - Use scripts/figma-inspector.js instead of creating temporary scripts
 5. **Preserve design intent** - Understand the purpose behind design choices
 6. **Keep repository clean** - Delete temporary files immediately after use
 7. **Refactor over duplicate** - Extend existing code rather than copying
