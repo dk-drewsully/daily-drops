@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import DailyDropsScreen from './components/DailyDropsScreen';
+import PasswordGate from './components/PasswordGate';
 import './App.css';
 
 function App() {
@@ -23,28 +24,30 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      {/* Navigation Arrows for Testing */}
-      <div className="nav-arrows">
-        <button
-          className="nav-arrow nav-arrow-left"
-          onClick={goToLoading}
-        >
-          ← Loading
-        </button>
-        <button
-          className="nav-arrow nav-arrow-right"
-          onClick={goToLanding}
-        >
-          Landing →
-        </button>
-      </div>
+    <PasswordGate>
+      <div className="App">
+        {/* Navigation Arrows for Testing */}
+        <div className="nav-arrows">
+          <button
+            className="nav-arrow nav-arrow-left"
+            onClick={goToLoading}
+          >
+            ← Loading
+          </button>
+          <button
+            className="nav-arrow nav-arrow-right"
+            onClick={goToLanding}
+          >
+            Landing →
+          </button>
+        </div>
 
-      {/* Unified Screen with Transitions */}
-      <div className="screen-container">
-        <DailyDropsScreen state={currentScreen} />
+        {/* Unified Screen with Transitions */}
+        <div className="screen-container">
+          <DailyDropsScreen state={currentScreen} />
+        </div>
       </div>
-    </div>
+    </PasswordGate>
   );
 }
 
