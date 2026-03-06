@@ -10,7 +10,7 @@ const PasswordGate = ({ children }) => {
 
   // Check if already authenticated
   useEffect(() => {
-    const auth = sessionStorage.getItem('dailyDropsAuth');
+    const auth = sessionStorage.getItem('dailyDropsAuth_v2');
     if (auth === 'authenticated') {
       setIsAuthenticated(true);
     }
@@ -21,7 +21,7 @@ const PasswordGate = ({ children }) => {
 
     // Password check
     if (password === 'lottodrops') {
-      sessionStorage.setItem('dailyDropsAuth', 'authenticated');
+      sessionStorage.setItem('dailyDropsAuth_v2', 'authenticated');
       setIsAuthenticated(true);
       setError('');
     } else {
