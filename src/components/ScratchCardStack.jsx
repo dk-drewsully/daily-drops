@@ -18,7 +18,8 @@ const ScratchCardStack = forwardRef(({
     { id: 3, tier: 'epic', reward: 50 }
   ],
   onCardRevealed,
-  onAllRevealed
+  onAllRevealed,
+  soundEnabled = true
 }, ref) => {
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const [revealedCards, setRevealedCards] = useState([]);
@@ -168,6 +169,7 @@ const ScratchCardStack = forwardRef(({
               onReset={isActive ? handleResetStack : undefined}
               autoScratch={autoScratchingCards.includes(card.id)}
               disableCollection={isAutoRevealing}
+              soundEnabled={soundEnabled}
             />
           </div>
         );

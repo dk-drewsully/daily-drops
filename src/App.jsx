@@ -5,6 +5,7 @@ import './App.css';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('loading'); // 'loading' or 'landing'
+  const [prototypeState, setPrototypeState] = useState('default');
 
   const goToLoading = () => setCurrentScreen('loading');
   const goToLanding = () => setCurrentScreen('landing');
@@ -26,25 +27,27 @@ function App() {
   return (
     <PasswordGate>
       <div className="App">
-        {/* Navigation Arrows for Testing */}
-        <div className="nav-arrows">
-          <button
-            className="nav-arrow nav-arrow-left"
-            onClick={goToLoading}
-          >
-            ← Loading
-          </button>
-          <button
-            className="nav-arrow nav-arrow-right"
-            onClick={goToLanding}
-          >
-            Landing →
-          </button>
-        </div>
+        {/* Navigation Arrows — only visible on default prototype state */}
+        {prototypeState === 'default' && (
+          <div className="nav-arrows">
+            <button
+              className="nav-arrow nav-arrow-left"
+              onClick={goToLoading}
+            >
+              ← Loading
+            </button>
+            <button
+              className="nav-arrow nav-arrow-right"
+              onClick={goToLanding}
+            >
+              Landing →
+            </button>
+          </div>
+        )}
 
         {/* Unified Screen with Transitions */}
         <div className="screen-container">
-          <DailyDropsScreen state={currentScreen} />
+          <DailyDropsScreen state={currentScreen} onPrototypeStateChange={setPrototypeState} />
         </div>
       </div>
     </PasswordGate>

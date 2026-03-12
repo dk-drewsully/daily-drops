@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './DailyDropsScreen.css';
 import ProgressTrackerCard from './ProgressTrackerCard';
 import ScratchCardStack from './ScratchCardStack';
@@ -27,7 +27,7 @@ import MaskGroup3 from '../assets/images/mask-group-394-68836.png';
  * @param {Object} props
  * @param {'loading' | 'landing'} props.state - Current screen state (for testing)
  */
-const DailyDropsScreen = ({ state: externalState }) => {
+const DailyDropsScreen = ({ state: externalState, onPrototypeStateChange }) => {
   const [internalState, setInternalState] = useState('loading');
   const [progress, setProgress] = useState(0);
   const [twinklingStarIndex, setTwinklingStarIndex] = useState(null);
@@ -40,6 +40,22 @@ const DailyDropsScreen = ({ state: externalState }) => {
     legendary: { current: 0, total: 3, isGlowing: false }
   });
 
+  // Sound & haptics preferences (persisted to localStorage)
+  const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('soundEnabled') !== 'false');
+  const [hapticsEnabled, setHapticsEnabled] = useState(() => localStorage.getItem('hapticsEnabled') !== 'false');
+
+  const handleToggleSound = () => {
+    const next = !soundEnabled;
+    setSoundEnabled(next);
+    localStorage.setItem('soundEnabled', String(next));
+  };
+
+  const handleToggleHaptics = () => {
+    const next = !hapticsEnabled;
+    setHapticsEnabled(next);
+    localStorage.setItem('hapticsEnabled', String(next));
+  };
+
   // Prototype state management (dev only)
   const [prototypeState, setPrototypeState] = useState('default');
   const [celebrationOverlay, setCelebrationOverlay] = useState({
@@ -49,6 +65,44 @@ const DailyDropsScreen = ({ state: externalState }) => {
   });
   const [landingVisible, setLandingVisible] = useState(false);
   const [detailsVisible, setDetailsVisible] = useState(false);
+
+  // Audio context for synthesized sounds
+  const audioContextRef = useRef(null);
+  const prevStateRef = useRef(null);
+
+  // Ascending chime: C5→G5→C6→E6, sine wave, instant attack, bell ring-out
+  const playTransitionChime = () => {
+    if (!soundEnabled) return;
+    try {
+      if (!audioContextRef.current) {
+        const AudioCtx = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
+        audioContextRef.current = new AudioCtx();
+      }
+      const ctx = audioContextRef.current;
+      if (ctx.state === 'suspended') ctx.resume();
+
+      const notes = [523.25, 783.99, 1046.50, 1318.51]; // C5, G5, C6, E6
+      const noteGap = 0.055;  // 55ms between hits — tight cascade
+      const ringOut = 0.35;   // each note rings for 350ms
+
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const start = ctx.currentTime + i * noteGap;
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(0.14, start + 0.004); // instant attack
+        gain.gain.exponentialRampToValueAtTime(0.001, start + ringOut);
+        osc.start(start);
+        osc.stop(start + ringOut + 0.01);
+      });
+    } catch (e) {
+      // Silently fail if audio unavailable
+    }
+  };
 
   // Show prototype nav for design team review
   const showPrototypeNav = true;
@@ -71,6 +125,14 @@ const DailyDropsScreen = ({ state: externalState }) => {
       }
     }
   }, [externalState, prototypeState, showPrototypeNav]);
+
+  // Play chime on loading → landing transition
+  useEffect(() => {
+    if (currentState === 'landing' && prevStateRef.current === 'loading') {
+      playTransitionChime();
+    }
+    prevStateRef.current = currentState;
+  }, [currentState]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Landing animation trigger - delay to ensure DOM renders first
   useEffect(() => {
@@ -149,7 +211,7 @@ const DailyDropsScreen = ({ state: externalState }) => {
   }, [currentState]);
 
   // Handle scratch card reveal
-  const handleCardRevealed = (tier, reward) => {
+  const handleCardRevealed = (tier) => {
     // Update progress tracker count
     setProgressData(prev => ({
       ...prev,
@@ -178,13 +240,18 @@ const DailyDropsScreen = ({ state: externalState }) => {
   // Prototype state change handler
   const handlePrototypeStateChange = (state) => {
     setPrototypeState(state);
+    if (onPrototypeStateChange) onPrototypeStateChange(state);
 
     if (state === 'reward') {
+      // Reward always appears over the landing screen, never loading
+      setInternalState('landing');
+      setProgress(100);
+
       // Show reward celebration (example: epic tier completed with 250 crowns)
       setCelebrationOverlay({
         isVisible: true,
         tier: 'epic',
-        rewardAmount: 250
+        rewardAmount: 50
       });
 
       // Set progress to show almost complete for other tiers
@@ -466,6 +533,7 @@ const DailyDropsScreen = ({ state: externalState }) => {
                       cards={scratchCards}
                       onCardRevealed={handleCardRevealed}
                       onAllRevealed={handleAllRevealed}
+                      soundEnabled={soundEnabled}
                     />
                   </div>
                 </>
@@ -475,6 +543,28 @@ const DailyDropsScreen = ({ state: externalState }) => {
           {!allCardsRevealed && (
             <div className="reveal-all-button-container">
               <RevealAllButton onClick={handleRevealAll} disabled={isRevealing} allRevealed={allCardsRevealed} />
+            </div>
+          )}
+
+          {/* Settings row - sound & haptics toggles */}
+          {!allCardsRevealed && (
+            <div className="settings-row">
+              <button
+                className={`settings-btn ${soundEnabled ? 'active' : ''}`}
+                onClick={handleToggleSound}
+                aria-label={soundEnabled ? 'Mute sound' : 'Unmute sound'}
+              >
+                <span className="settings-btn-icon">{soundEnabled ? '🔊' : '🔇'}</span>
+                <span className="settings-btn-label">Sound</span>
+              </button>
+              <button
+                className={`settings-btn ${hapticsEnabled ? 'active' : ''}`}
+                onClick={handleToggleHaptics}
+                aria-label={hapticsEnabled ? 'Disable haptics' : 'Enable haptics'}
+              >
+                <span className="settings-btn-icon">{hapticsEnabled ? '📳' : '📴'}</span>
+                <span className="settings-btn-label">Haptics</span>
+              </button>
             </div>
           )}
         </div>
@@ -500,6 +590,7 @@ const DailyDropsScreen = ({ state: externalState }) => {
           tier={celebrationOverlay.tier}
           rewardAmount={celebrationOverlay.rewardAmount}
           onDismiss={handleDismissCelebration}
+          soundEnabled={soundEnabled}
         />
       )}
 
@@ -509,6 +600,8 @@ const DailyDropsScreen = ({ state: externalState }) => {
           currentState={prototypeState}
           onStateChange={handlePrototypeStateChange}
           isVisible={showPrototypeNav}
+          soundEnabled={soundEnabled}
+          onToggleSound={handleToggleSound}
         />
       )}
     </div>

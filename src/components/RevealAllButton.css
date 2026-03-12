@@ -2,8 +2,8 @@
 
 .reveal-all-button {
   position: relative;
-  width: 220px;
-  height: 44px; /* Increased from 36px for better touch target */
+  width: 180px;
+  height: 36px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -86,8 +86,8 @@
   z-index: 2;
   font-family: 'Grota Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 800;
-  font-size: 16px;
-  line-height: 20px;
+  font-size: 14px;
+  line-height: 18px;
   text-align: center;
   color: rgba(255, 255, 255, 1);
   text-transform: uppercase;

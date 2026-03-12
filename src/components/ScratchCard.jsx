@@ -28,7 +28,8 @@ function ScratchCard({
   isActive = true,
   onReset, // Optional callback when card is reset
   autoScratch = false,
-  disableCollection = false // New prop to disable collection animation
+  disableCollection = false, // New prop to disable collection animation
+  soundEnabled = true
 }) {
   const canvasRef = useRef(null);
   const [scratchProgress, setScratchProgress] = useState(0);
@@ -210,6 +211,13 @@ function ScratchCard({
     };
   }, [autoScratch, isRevealed, tier, rewardAmount, onReveal]);
 
+  // Play reveal sound when card is revealed
+  useEffect(() => {
+    if (isRevealed) {
+      playRevealSound();
+    }
+  }, [isRevealed]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Draw the metallic scratch surface
   const drawScratchSurface = (ctx) => {
     // Create gradient matching Figma design
@@ -326,6 +334,7 @@ function ScratchCard({
 
   // Play scratch sound effect
   const playScratchSound = () => {
+    if (!soundEnabled) return;
     if (!audioContextRef.current) return;
 
     try {
@@ -359,6 +368,47 @@ function ScratchCard({
       scratchSoundRef.current = source;
     } catch (e) {
       // Silently fail if audio doesn't work
+    }
+  };
+
+  // Play celebratory reveal sound — "ta-ta-TAAA" fanfare shape, G major, triangle wave
+  const playRevealSound = () => {
+    if (!soundEnabled) return;
+    if (!audioContextRef.current) return;
+
+    try {
+      const ctx = audioContextRef.current;
+      if (ctx.state === 'suspended') ctx.resume();
+
+      const playNote = (freq, startTime, ringOut, peak, type = 'triangle') => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(peak, startTime + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + ringOut);
+        osc.start(startTime);
+        osc.stop(startTime + ringOut + 0.01);
+      };
+
+      const t = ctx.currentTime;
+
+      // "ta" — G5, staccato punch
+      playNote(783.99, t, 0.13, 0.20);
+
+      // "ta" — B5, staccato punch
+      playNote(987.77, t + 0.055, 0.13, 0.20);
+
+      // "TAAA" — D6+G6+B6 chord stab, all at once, rings out
+      playNote(1174.66, t + 0.115, 0.55, 0.22); // D6
+      playNote(1567.98, t + 0.115, 0.55, 0.26); // G6
+      playNote(1975.53, t + 0.115, 0.45, 0.16); // B6 — lighter overtone
+
+    } catch (e) {
+      // Silently fail
     }
   };
 

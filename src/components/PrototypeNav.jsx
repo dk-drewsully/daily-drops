@@ -11,13 +11,13 @@ import DailyDropsLogo from '../assets/images/DailyDrops.svg';
  * @param {Function} props.onStateChange - Callback when state changes
  * @param {boolean} props.isVisible - Show/hide navigation
  */
-function PrototypeNav({ currentState, onStateChange, isVisible }) {
+function PrototypeNav({ currentState, onStateChange, isVisible, soundEnabled = true, onToggleSound }) {
   if (!isVisible) return null;
 
   const states = [
     { id: 'default', label: 'Default', description: 'Normal flow' },
     { id: 'details', label: 'Details Screen', description: 'End state' },
-    { id: 'reward', label: 'Reward', description: 'Celebration', tier: 'reward', wip: true }
+    { id: 'reward', label: 'Reward', description: 'Celebration', tier: 'reward' }
   ];
 
   return (
@@ -44,6 +44,15 @@ function PrototypeNav({ currentState, onStateChange, isVisible }) {
           </button>
         ))}
       </div>
+
+      <button
+        className={`nav-sound-toggle ${soundEnabled ? 'on' : 'off'}`}
+        onClick={onToggleSound}
+        aria-label={soundEnabled ? 'Mute sound' : 'Unmute sound'}
+      >
+        <span className="nav-sound-icon">{soundEnabled ? '🔊' : '🔇'}</span>
+        <span className="nav-sound-label">{soundEnabled ? 'Sound On' : 'Sound Off'}</span>
+      </button>
     </div>
   );
 }

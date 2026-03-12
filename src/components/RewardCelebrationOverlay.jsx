@@ -1,51 +1,132 @@
-import React from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './RewardCelebrationOverlay.css';
+import StarBurst from '../assets/images/reward-star-burst.svg';
+import CoinsGroup from '../assets/images/reward-coins-group.svg';
+import ConfettiGroup from '../assets/images/reward-confetti-group.svg';
 
 /**
- * Reward Celebration Overlay Component
- * Exact implementation of Figma "Winning Popup Screen" (node-id=488:19003)
+ * Reward Celebration Overlay
+ * Figma: "Winning Popup Screen" node-id=488:19003 (343×517px)
  */
-function RewardCelebrationOverlay({
-  isVisible = false,
-  rewardAmount = 50,
-  onDismiss
-}) {
-  if (!isVisible) return null;
+function RewardCelebrationOverlay({ isVisible = false, tier = 'common', rewardAmount = 50, onDismiss, soundEnabled = true }) {
+  const [isExiting, setIsExiting] = useState(false);
+  const audioContextRef = useRef(null);
+
+  const playRewardSound = (soundTier) => {
+    if (!soundEnabled) return;
+    try {
+      if (!audioContextRef.current) {
+        const AudioCtx = window.AudioContext || /** @type {any} */ (window).webkitAudioContext;
+        audioContextRef.current = new AudioCtx();
+      }
+      const ctx = audioContextRef.current;
+      if (ctx.state === 'suspended') ctx.resume();
+
+      const playNote = (freq, startTime, ringOut, peak, type = 'sine') => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(peak, startTime + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + ringOut);
+        osc.start(startTime);
+        osc.stop(startTime + ringOut + 0.01);
+      };
+
+      const t = ctx.currentTime;
+
+      if (soundTier === 'common') {
+        // Bright 4-note ascending arpeggio — happy, modest win
+        [783.99, 987.77, 1174.66, 1567.98].forEach((freq, i) => {
+          playNote(freq, t + i * 0.065, 0.35, 0.15, 'triangle');
+        });
+
+      } else if (soundTier === 'rare') {
+        // Two quick punches + sustained chord resolve — sparkly upgrade
+        playNote(880.00,   t,        0.15, 0.18, 'triangle'); // A5
+        playNote(1108.73,  t + 0.07, 0.15, 0.18, 'triangle'); // C#6
+        playNote(1318.51,  t + 0.14, 0.75, 0.20, 'sine');     // E6 \
+        playNote(1760.00,  t + 0.14, 0.75, 0.22, 'sine');     // A6  chord
+        playNote(2217.46,  t + 0.14, 0.55, 0.12, 'sine');     // C#7 /
+
+      } else if (soundTier === 'epic') {
+        // Bass impact + 5-note cascade + triumphant chord ring-out
+        playNote(196.00, t, 0.22, 0.22, 'sine'); // G3 bass thump
+        [783.99, 987.77, 1174.66, 1567.98, 1975.53].forEach((freq, i) => {
+          playNote(freq, t + 0.05 + i * 0.055, 0.38, 0.16 + i * 0.01, 'triangle');
+        });
+        const chord = t + 0.05 + 5 * 0.055;
+        [1174.66, 1567.98, 1975.53, 2349.32].forEach((freq, i) => {
+          playNote(freq, chord, 1.1 - i * 0.1, 0.20 - i * 0.03, 'sine');
+        });
+
+      } else if (soundTier === 'legendary') {
+        // Deep double bass + 7-note cascade + massive chord — maximum drama
+        playNote(130.81, t,        0.35, 0.22, 'sine'); // C3 deep bass
+        playNote(261.63, t + 0.02, 0.28, 0.17, 'sine'); // C4 bass layer
+        [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00].forEach((freq, i) => {
+          playNote(freq, t + 0.08 + i * 0.06, 0.42 + i * 0.05, 0.14 + i * 0.012, 'triangle');
+        });
+        const megaChord = t + 0.08 + 7 * 0.06;
+        [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, i) => {
+          playNote(freq, megaChord, 1.6 - i * 0.15, 0.21 - i * 0.03, 'sine');
+        });
+      }
+    } catch (e) {
+      // Silently fail
+    }
+  };
+
+  useEffect(() => {
+    if (isVisible) {
+      playRewardSound(tier);
+    }
+  }, [isVisible]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleDismiss = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      setIsExiting(false);
+      if (onDismiss) onDismiss();
+    }, 350);
+  };
+
+  if (!isVisible && !isExiting) return null;
 
   return (
-    <div 
-      className="reward-celebration-overlay"
-      onClick={onDismiss}
+    <div
+      className={`reward-celebration-overlay${isExiting ? ' exiting' : ''}`}
+      onClick={handleDismiss}
     >
-      {/* Winning Popup Screen - 343×517px modal */}
-      <div className="winning-popup-screen" onClick={(e) => e.stopPropagation()}>
-        
-        {/* WinningModal_backColors - blurred orbs container */}
-        <div className="winning-modal-back-colors">
-          <div className="back-orb-cyan back-orb-cyan-1" />
-          <div className="back-orb-cyan back-orb-cyan-2" />
-          <div className="back-orb-yellow" />
-        </div>
+      {/* Full-screen background glow — covers entire overlay top to bottom,
+          no hard edges, no fixed bounding box */}
+      <div className="modal-bg-glow" />
 
-        {/* Star Vector - starburst */}
-        <div className="star-vector" />
+      {/* 343×517px popup card */}
+      <div className="winning-popup" onClick={e => e.stopPropagation()}>
 
-        {/* Coins group */}
-        <div className="coins-group" />
+        {/* Orb accents: blurred color blobs inside the popup area */}
+        <div className="orb orb-yellow" />
+        <div className="orb orb-cyan-mid" />
+        <div className="orb orb-cyan-bottom" />
 
-        {/* Confetti group */}
-        <div className="confetti-group" />
+        {/* Starburst: 619×620 at (-138, -52) relative to popup */}
+        <img className="star-burst" src={StarBurst} alt="" />
 
-        {/* Text container */}
-        <div className="text-container">
-          {/* "You won" text */}
-          <div className="you-won-text">YOU WON</div>
+        {/* Coins: 422×516 at (-54, 0) relative to popup */}
+        <img className="coins-group" src={CoinsGroup} alt="" />
 
-          {/* Amount */}
-          <div className="amount-text">${rewardAmount}</div>
+        {/* Confetti: 409×431 at (-41, 31) relative to popup */}
+        <img className="confetti-group" src={ConfettiGroup} alt="" />
 
-          {/* "lottery Credits" */}
-          <div className="credits-text">LOTTERY CREDITS</div>
+        {/* Text: centered, starts at y=120 relative to popup */}
+        <div className="reward-text">
+          <span className="you-won-label">YOU WON</span>
+          <span className="popup-reward-amount">${rewardAmount}</span>
+          <span className="credits-label">LOTTERY CREDITS</span>
         </div>
 
       </div>
