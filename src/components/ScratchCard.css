@@ -544,6 +544,24 @@
   pointer-events: none;
 }
 
+/* Particle Dust Canvas */
+.particle-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 236px;
+  height: 236px;
+  border-radius: 10px;
+  z-index: 2; /* Above scratch canvas */
+  pointer-events: none; /* Don't block scratch events */
+  opacity: 1;
+  transition: opacity 0.4s ease-out;
+}
+
+.scratch-card.revealed .particle-canvas {
+  opacity: 0;
+}
+
 /* Stack Shadow Layers */
 .stack-shadow {
   position: absolute;

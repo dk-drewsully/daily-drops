@@ -32,6 +32,13 @@ function ScratchCard({
   soundEnabled = true
 }) {
   const canvasRef = useRef(null);
+  const particleCanvasRef = useRef(null);
+  const particlesRef = useRef({
+    pool: null,
+    activeCount: 0,
+    animationFrameId: null,
+    gradientLookup: []
+  });
   const [scratchProgress, setScratchProgress] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
   const [isCollecting, setIsCollecting] = useState(false);
@@ -85,12 +92,32 @@ function ScratchCard({
       console.warn('Web Audio API not supported');
     }
 
+    // Initialize particle canvas
+    if (particleCanvasRef.current) {
+      const particleCanvas = particleCanvasRef.current;
+      const particleCtx = particleCanvas.getContext('2d', { alpha: true });
+      const particleDpr = window.devicePixelRatio || 1;
+
+      particleCanvas.width = 236 * particleDpr;
+      particleCanvas.height = 236 * particleDpr;
+      particleCanvas.style.width = '236px';
+      particleCanvas.style.height = '236px';
+      particleCtx.scale(particleDpr, particleDpr);
+
+      // Initialize particle pool and gradient lookup
+      initializeParticleSystem();
+
+      // Start particle render loop
+      startParticleRenderLoop();
+    }
+
     return () => {
       // Cleanup
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (scratchSoundRef.current) {
         scratchSoundRef.current.stop();
       }
+      stopParticleRenderLoop();
     };
   }, []);
 
@@ -156,6 +183,9 @@ function ScratchCard({
         ctx.beginPath();
         ctx.arc(pos.x, pos.y, thumbRadius, 0, Math.PI * 2);
         ctx.fill();
+
+        // Spawn particles for this stroke
+        spawnParticlesAtScratch(pos.x, pos.y, 2);
 
         previousPositions[index] = pos;
       });
@@ -288,6 +318,9 @@ function ScratchCard({
     ctx.beginPath();
     ctx.arc(coords.x, coords.y, 20, 0, Math.PI * 2);
     ctx.fill();
+
+    // Spawn particles at scratch location
+    spawnParticlesAtScratch(coords.x, coords.y, 4);
 
     strokeCountRef.current++;
 
@@ -436,6 +469,194 @@ function ScratchCard({
     setTiltY(0);
   };
 
+  // ========== PARTICLE SYSTEM ==========
+
+  // Particle configuration constants
+  const PARTICLE_CONFIG = {
+    SPAWN_COUNT_MIN: 3,
+    SPAWN_COUNT_MAX: 5,
+    AUTO_SPAWN_COUNT: 2,
+    MAX_PARTICLES: 300,
+    SPAWN_SPREAD: 12,
+    GRAVITY: 0.15,
+    AIR_RESISTANCE: 0.98,
+    INITIAL_SPEED_MIN: 2,
+    INITIAL_SPEED_MAX: 5,
+    LAUNCH_ANGLE_SPREAD: 0.5, // ±45° in radians
+    DECAY_MIN: 0.008,
+    DECAY_MAX: 0.016,
+    SIZE_MIN: 2,
+    SIZE_MAX: 4,
+    MAX_OPACITY: 0.8
+  };
+
+  // Initialize particle pool and gradient lookup table
+  const initializeParticleSystem = () => {
+    const particles = particlesRef.current;
+
+    // Create particle pool (300 pre-allocated objects)
+    particles.pool = new Array(PARTICLE_CONFIG.MAX_PARTICLES);
+    for (let i = 0; i < PARTICLE_CONFIG.MAX_PARTICLES; i++) {
+      particles.pool[i] = {
+        x: 0,
+        y: 0,
+        vx: 0,
+        vy: 0,
+        life: 0,
+        decay: 0,
+        size: 0,
+        color: [255, 255, 255]
+      };
+    }
+    particles.activeCount = 0;
+
+    // Pre-compute gradient color lookup (236 colors, one per Y position)
+    particles.gradientLookup = [];
+    for (let y = 0; y < 236; y++) {
+      particles.gradientLookup[y] = computeGradientColor(y);
+    }
+  };
+
+  // Compute gradient color at Y position (matches scratch surface gradient)
+  const computeGradientColor = (y) => {
+    // Gradient stops matching lines 224-229 in drawScratchSurface
+    const stops = [
+      { pos: 0, color: [204, 232, 254] },
+      { pos: 0.2416, color: [205, 160, 255] },
+      { pos: 0.4, color: [132, 137, 245] },
+      { pos: 0.7133, color: [205, 241, 255] },
+      { pos: 1, color: [181, 145, 233] }
+    ];
+
+    const progress = y / 236;
+
+    // Find surrounding stops
+    let prevStop = stops[0];
+    let nextStop = stops[stops.length - 1];
+    for (let i = 0; i < stops.length - 1; i++) {
+      if (progress >= stops[i].pos && progress <= stops[i + 1].pos) {
+        prevStop = stops[i];
+        nextStop = stops[i + 1];
+        break;
+      }
+    }
+
+    // Linear interpolation between stops
+    const localProgress = (progress - prevStop.pos) / (nextStop.pos - prevStop.pos);
+    return [
+      Math.round(prevStop.color[0] + (nextStop.color[0] - prevStop.color[0]) * localProgress),
+      Math.round(prevStop.color[1] + (nextStop.color[1] - prevStop.color[1]) * localProgress),
+      Math.round(prevStop.color[2] + (nextStop.color[2] - prevStop.color[2]) * localProgress)
+    ];
+  };
+
+  // Spawn particles at scratch location
+  const spawnParticlesAtScratch = (x, y, count = 4) => {
+    if (!particleCanvasRef.current || isRevealed) return;
+
+    const particles = particlesRef.current;
+    const numParticles = count + Math.floor(Math.random() * 2); // count to count+1
+
+    for (let i = 0; i < numParticles; i++) {
+      if (particles.activeCount >= PARTICLE_CONFIG.MAX_PARTICLES) break; // Pool exhausted
+
+      const particle = particles.pool[particles.activeCount];
+
+      // Position with slight randomness
+      particle.x = x + (Math.random() - 0.5) * PARTICLE_CONFIG.SPAWN_SPREAD;
+      particle.y = y + (Math.random() - 0.5) * PARTICLE_CONFIG.SPAWN_SPREAD;
+
+      // Velocity - predominantly upward with spread
+      const angle = Math.random() * Math.PI * PARTICLE_CONFIG.LAUNCH_ANGLE_SPREAD - Math.PI * 0.25; // ±45°
+      const speed = PARTICLE_CONFIG.INITIAL_SPEED_MIN + Math.random() * (PARTICLE_CONFIG.INITIAL_SPEED_MAX - PARTICLE_CONFIG.INITIAL_SPEED_MIN);
+      particle.vx = Math.sin(angle) * speed;
+      particle.vy = -Math.abs(Math.cos(angle)) * speed; // Always upward
+
+      // Lifetime
+      particle.life = 1.0;
+      particle.decay = PARTICLE_CONFIG.DECAY_MIN + Math.random() * (PARTICLE_CONFIG.DECAY_MAX - PARTICLE_CONFIG.DECAY_MIN);
+
+      // Size
+      particle.size = PARTICLE_CONFIG.SIZE_MIN + Math.random() * (PARTICLE_CONFIG.SIZE_MAX - PARTICLE_CONFIG.SIZE_MIN);
+
+      // Color from gradient lookup
+      const clampedY = Math.max(0, Math.min(235, Math.floor(y)));
+      particle.color = particles.gradientLookup[clampedY];
+
+      particles.activeCount++;
+    }
+  };
+
+  // Start particle render loop
+  const startParticleRenderLoop = () => {
+    const particles = particlesRef.current;
+
+    const renderLoop = () => {
+      updateAndRenderParticles();
+      particles.animationFrameId = requestAnimationFrame(renderLoop);
+    };
+
+    renderLoop();
+  };
+
+  // Stop particle render loop
+  const stopParticleRenderLoop = () => {
+    const particles = particlesRef.current;
+    if (particles.animationFrameId) {
+      cancelAnimationFrame(particles.animationFrameId);
+      particles.animationFrameId = null;
+    }
+  };
+
+  // Update and render all particles
+  const updateAndRenderParticles = () => {
+    if (!particleCanvasRef.current) return;
+
+    const canvas = particleCanvasRef.current;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    const particles = particlesRef.current;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, 236, 236);
+
+    // Update and draw particles (reverse iteration for efficient removal)
+    for (let i = particles.activeCount - 1; i >= 0; i--) {
+      const p = particles.pool[i];
+
+      // Apply physics
+      p.vy += PARTICLE_CONFIG.GRAVITY; // Gravity
+      p.vx *= PARTICLE_CONFIG.AIR_RESISTANCE; // Air resistance
+      p.vy *= PARTICLE_CONFIG.AIR_RESISTANCE;
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      p.life -= p.decay;
+
+      // Check if particle should be removed
+      const offCanvas = p.x < -20 || p.x > 256 || p.y < -20 || p.y > 256;
+      const dead = p.life <= 0;
+
+      if (dead || offCanvas) {
+        // Swap with last active particle and decrement count
+        const temp = particles.pool[i];
+        particles.pool[i] = particles.pool[particles.activeCount - 1];
+        particles.pool[particles.activeCount - 1] = temp;
+        particles.activeCount--;
+      } else {
+        // Draw particle
+        const alpha = Math.pow(p.life, 2) * PARTICLE_CONFIG.MAX_OPACITY; // Quadratic fade
+        ctx.fillStyle = `rgba(${p.color[0]}, ${p.color[1]}, ${p.color[2]}, ${alpha})`;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  };
+
+  // ========== END PARTICLE SYSTEM ==========
+
   // Reset stack (if onReset provided by parent stack)
   const resetCard = () => {
     if (onReset) {
@@ -463,6 +684,16 @@ function ScratchCard({
         setScratchProgress(0);
         strokeCountRef.current = 0;
         resetTilt();
+
+        // Clear all active particles
+        const particles = particlesRef.current;
+        if (particles.pool) {
+          particles.activeCount = 0;
+          if (particleCanvasRef.current) {
+            const particleCtx = particleCanvasRef.current.getContext('2d', { alpha: true });
+            particleCtx.clearRect(0, 0, 236, 236);
+          }
+        }
 
         setTimeout(() => {
           canvas.style.transition = 'opacity 0.3s ease-in';
@@ -541,6 +772,13 @@ function ScratchCard({
         onPointerMove={handleScratch}
         onPointerUp={endScratch}
         onPointerLeave={endScratch}
+        aria-hidden="true"
+      />
+
+      {/* Particle dust canvas */}
+      <canvas
+        ref={particleCanvasRef}
+        className="particle-canvas"
         aria-hidden="true"
       />
 
