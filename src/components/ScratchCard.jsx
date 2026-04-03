@@ -98,10 +98,10 @@ function ScratchCard({
       const particleCtx = particleCanvas.getContext('2d', { alpha: true });
       const particleDpr = window.devicePixelRatio || 1;
 
-      particleCanvas.width = 236 * particleDpr;
-      particleCanvas.height = 236 * particleDpr;
-      particleCanvas.style.width = '236px';
-      particleCanvas.style.height = '236px';
+      particleCanvas.width = 500 * particleDpr;
+      particleCanvas.height = 500 * particleDpr;
+      particleCanvas.style.width = '500px';
+      particleCanvas.style.height = '500px';
       particleCtx.scale(particleDpr, particleDpr);
 
       // Initialize particle pool and gradient lookup
@@ -563,8 +563,9 @@ function ScratchCard({
       const particle = particles.pool[particles.activeCount];
 
       // Position with slight randomness
-      particle.x = x + (Math.random() - 0.5) * PARTICLE_CONFIG.SPAWN_SPREAD;
-      particle.y = y + (Math.random() - 0.5) * PARTICLE_CONFIG.SPAWN_SPREAD;
+      // Add 130px offset since canvas is now 500x500 with card centered at 130-366
+      particle.x = x + 130 + (Math.random() - 0.5) * PARTICLE_CONFIG.SPAWN_SPREAD;
+      particle.y = y + 130 + (Math.random() - 0.5) * PARTICLE_CONFIG.SPAWN_SPREAD;
 
       // Velocity - predominantly upward with spread
       const angle = Math.random() * Math.PI * PARTICLE_CONFIG.LAUNCH_ANGLE_SPREAD - Math.PI * 0.25; // ±45°
@@ -617,7 +618,7 @@ function ScratchCard({
     const particles = particlesRef.current;
 
     // Clear canvas
-    ctx.clearRect(0, 0, 236, 236);
+    ctx.clearRect(0, 0, 500, 500);
 
     // Update and draw particles (reverse iteration for efficient removal)
     for (let i = particles.activeCount - 1; i >= 0; i--) {
@@ -634,7 +635,10 @@ function ScratchCard({
       p.life -= p.decay;
 
       // Check if particle should be removed
-      const offCanvas = p.x < -20 || p.x > 256 || p.y < -20 || p.y > 256;
+      // Allow particles to fall well beyond card boundaries
+      // With 500px canvas and 130px offset, center card is at 130-366
+      // Allow particles to fall far down and drift sideways before removal
+      const offCanvas = p.x < -50 || p.x > 550 || p.y > 600;
       const dead = p.life <= 0;
 
       if (dead || offCanvas) {
@@ -691,7 +695,7 @@ function ScratchCard({
           particles.activeCount = 0;
           if (particleCanvasRef.current) {
             const particleCtx = particleCanvasRef.current.getContext('2d', { alpha: true });
-            particleCtx.clearRect(0, 0, 236, 236);
+            particleCtx.clearRect(0, 0, 500, 500);
           }
         }
 

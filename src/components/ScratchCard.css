@@ -9,6 +9,7 @@
   transition: transform 0.7s cubic-bezier(0.34, 0.46, 0.45, 0.94),
               opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  overflow: visible; /* Allow particle overflow beyond card boundaries */
 }
 
 /* Force maximum quality rendering for all SVG/image elements */
@@ -547,15 +548,15 @@
 /* Particle Dust Canvas */
 .particle-canvas {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 236px;
-  height: 236px;
-  border-radius: 10px;
+  top: -130px; /* Offset to center card within larger canvas */
+  left: -130px; /* Offset to center card within larger canvas */
+  width: 500px; /* Expanded to allow particle overflow */
+  height: 500px; /* Expanded to allow particle overflow */
   z-index: 2; /* Above scratch canvas */
   pointer-events: none; /* Don't block scratch events */
   opacity: 1;
   transition: opacity 0.4s ease-out;
+  /* No border-radius to avoid clipping particles */
 }
 
 .scratch-card.revealed .particle-canvas {
