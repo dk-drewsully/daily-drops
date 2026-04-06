@@ -15,17 +15,24 @@ const LoadingScreen = () => {
   const [twinklingStarIndex, setTwinklingStarIndex] = useState(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + 1;
-      });
-    }, 30);
+    const duration = 3000; // 3 seconds to complete
+    const startTime = Date.now();
+    let animationFrameId;
 
-    return () => clearInterval(interval);
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const newProgress = Math.min((elapsed / duration) * 100, 100);
+
+      setProgress(newProgress);
+
+      if (newProgress < 100) {
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
   useEffect(() => {
@@ -110,7 +117,7 @@ const LoadingScreen = () => {
         <div className="progress-bar-background">
           <div
             className="progress-bar-fill"
-            style={{ width: `${progress}%` }}
+            style={{ transform: `scaleX(${progress / 100})` }}
           ></div>
         </div>
       </div>

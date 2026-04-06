@@ -39,9 +39,9 @@ function RewardCelebrationOverlay({ isVisible = false, tier = 'common', rewardAm
       const t = ctx.currentTime;
 
       if (soundTier === 'common') {
-        // Bright 4-note ascending arpeggio — happy, modest win
-        [783.99, 987.77, 1174.66, 1567.98].forEach((freq, i) => {
-          playNote(freq, t + i * 0.065, 0.35, 0.15, 'triangle');
+        // Slow ringing bell toll — C major, sine wave, warm & distinct from reveal
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+          playNote(freq, t + i * 0.12, 0.55, 0.14, 'sine');
         });
 
       } else if (soundTier === 'rare') {

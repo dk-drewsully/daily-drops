@@ -215,13 +215,27 @@
   text-transform: uppercase;
   -webkit-text-stroke-width: 1.5px;
   -webkit-text-stroke-color: #FFD612;
-  background: linear-gradient(180deg, #FFFBEB 0%, #F6B700 100%);
+  /* Layered backgrounds: diagonal shimmer stripe + base gradient (both clip to text) */
+  background:
+    linear-gradient(
+      225deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 45%,
+      rgba(255, 255, 255, 0.7) 50%,
+      rgba(255, 255, 255, 0) 55%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    linear-gradient(180deg, #FFFBEB 0%, #F6B700 100%);
+  background-size: 400% 400%, 100% 100%;
+  background-position: 100% 0%, 0 0;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 2px 0.8px #FDEFC2) drop-shadow(0 3px 10px #270E5F);
   opacity: 0;
-  animation: amount-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1) 320ms forwards;
+  animation:
+    amount-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1) 320ms forwards,
+    text-shimmer 3.5s ease-in-out 0ms;
 }
 
 /* "LOTTERY CREDITS" — Figma: left:62, top:304, 220×92 */
@@ -253,6 +267,15 @@
   from { opacity: 0; transform: scale(0.4); }
   60%  { transform: scale(1.08); }
   to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes text-shimmer {
+  0% {
+    background-position: 100% 0%, 0 0;
+  }
+  100% {
+    background-position: 0% 100%, 0 0;
+  }
 }
 
 /* ─── Exit ──────────────────────────────────────────────────── */

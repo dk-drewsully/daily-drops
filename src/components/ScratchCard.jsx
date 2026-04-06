@@ -648,13 +648,12 @@ function ScratchCard({
         particles.pool[particles.activeCount - 1] = temp;
         particles.activeCount--;
       } else {
-        // Draw particle
+        // Draw particle as square
         const alpha = Math.pow(p.life, 2) * PARTICLE_CONFIG.MAX_OPACITY; // Quadratic fade
         ctx.fillStyle = `rgba(${p.color[0]}, ${p.color[1]}, ${p.color[2]}, ${alpha})`;
 
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
+        // Draw square centered at particle position
+        ctx.fillRect(p.x - p.size, p.y - p.size, p.size * 2, p.size * 2);
       }
     }
   };
